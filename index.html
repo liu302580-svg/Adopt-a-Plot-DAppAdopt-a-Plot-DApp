@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adopt-a-Plot: Organic Farming DApp</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" type="application/javascript"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin-bottom: 20px; }
@@ -15,20 +14,31 @@
         button:disabled { background-color: #95a5a6; cursor: not-allowed; }
         input[type="text"], input[type="number"] { width: calc(100% - 22px); padding: 10px; margin-top: 10px; margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 5px; }
         .info-box { background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-top: 15px; border-left: 5px solid #3498db; word-break: break-all; }
-        .status { margin-top: 10px; font-weight: bold; color: #e74c3c; text-align: center; }
+        .status { margin-top: 10px; font-weight: bold; color: #e74c3c; text-align: center; white-space: pre-wrap; word-break: break-word; }
+        .status.ok { color: #27ae60; }
         label { font-weight: bold; color: #7f8c8d; }
+        /* 状态栏常驻显示，不再藏在隐藏容器里 */
+        #statusBar { background-color: #fffbe6; border: 1px solid #f5d76e; color: #8a6d3b; padding: 10px 14px; border-radius: 6px; font-size: 14px; text-align: center; width: 100%; max-width: 600px; margin-bottom: 20px; box-sizing: border-box; }
+        #statusBar.error { background-color: #fdecea; border-color: #e74c3c; color: #a93226; }
+        #statusBar.success { background-color: #eafaf1; border-color: #27ae60; color: #1e8449; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div style="width:100%;max-width:600px;text-align:center;">
     <h1>🌱 Adopt-a-Plot</h1>
-    <p style="text-align: center; color: #7f8c8d;">Blockchain-based Organic Farming Platform</p>
-    
+    <p style="color:#7f8c8d;">Blockchain-based Organic Farming Platform</p>
+</div>
+
+<!-- 常驻可见的状态栏：任何错误都会显示在这里 -->
+<div id="statusBar">未连接。请点击下方按钮连接 MetaMask（请确保钱包已解锁）。</div>
+
+<div class="container">
     <button id="connectWalletBtn">🔗 Connect MetaMask Wallet</button>
     <div class="info-box" id="walletInfo" style="display: none;">
         <p><strong>Status:</strong> Connected ✅</p>
         <p><strong>Your Address:</strong> <span id="walletAddress"></span></p>
+        <p><strong>Network:</strong> <span id="walletNetwork"></span></p>
     </div>
 </div>
 
@@ -56,109 +66,152 @@
     <label for="newStatusInput">New Status:</label>
     <input type="text" id="newStatusInput" placeholder="e.g., Growing / Harvested">
     <button id="updateBtn">🔄 Update Status (Requires Gas)</button>
-    
-    <p class="status" id="statusMessage"></p>
 </div>
 
 <script>
+    // ============ 配置 ============
     const contractAddress = "0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f";
-    
     const contractABI = [
         "function adoptPlot(string memory _cropType) public",
         "function updatePlotStatus(uint _id, string memory _newStatus) public",
         "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)"
     ];
+    const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
+    const SEPOLIA_PARAMS = {
+        chainId: SEPOLIA_CHAIN_ID,
+        chainName: "Sepolia",
+        nativeCurrency: { name: "SepoliaETH", symbol: "SepoliaETH", decimals: 18 },
+        rpcUrls: ["https://rpc.sepolia.org", "https://ethereum-sepolia-rpc.publicnode.com"],
+        blockExplorerUrls: ["https://sepolia.etherscan.io"]
+    };
 
-    let provider;
-    let signer;
-    let contract;
+    // ============ ethers 多 CDN 加载（任一失败自动换下一个） ============
+    const ETHER_CDNS = [
+        "https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js",
+        "https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js",
+        "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"
+    ];
+    function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+            var s = document.createElement("script");
+            s.src = src;
+            s.onload = function () { s.remove(); resolve(); };
+            s.onerror = function () { s.remove(); reject(new Error("load failed: " + src)); };
+            document.head.appendChild(s);
+        });
+    }
+    (async function ensureEthers() {
+        if (window.ethers) return;
+        for (var i = 0; i < ETHER_CDNS.length; i++) {
+            try { await loadScript(ETHER_CDNS[i]); if (window.ethers) return; } catch (e) {}
+        }
+        setStatus("ethers 库加载失败：请检查网络或刷新后重试。", "error");
+    })();
 
-    const connectWalletBtn = document.getElementById('connectWalletBtn');
-    const walletInfo = document.getElementById('walletInfo');
-    const walletAddressSpan = document.getElementById('walletAddress');
-    const appControls = document.getElementById('appControls');
-    const statusMessage = document.getElementById('statusMessage');
+    // ============ DOM 与状态 ============
+    let provider, signer, contract;
 
-    function showStatus(msg) { 
-        statusMessage.innerText = msg; 
-        setTimeout(() => { statusMessage.innerText = ""; }, 5000); 
+    const statusBar = document.getElementById("statusBar");
+    const connectWalletBtn = document.getElementById("connectWalletBtn");
+    const walletInfo = document.getElementById("walletInfo");
+    const walletAddressSpan = document.getElementById("walletAddress");
+    const walletNetworkSpan = document.getElementById("walletNetwork");
+    const appControls = document.getElementById("appControls");
+
+    function setStatus(msg, kind) {
+        statusBar.innerText = msg;
+        statusBar.className = "success";
+        if (kind === "error") statusBar.className = "error";
+        if (kind === "info") statusBar.className = "";
     }
 
-    connectWalletBtn.addEventListener('click', async () => {
-        if (typeof window.ethereum !== 'undefined') {
-            try {
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
-                
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                signer = provider.getSigner();
-                const address = await signer.getAddress();
-                
-                contract = new ethers.Contract(contractAddress, contractABI, signer);
-                
-                walletAddressSpan.innerText = address;
-                walletInfo.style.display = 'block';
-                appControls.style.display = 'block';
-                connectWalletBtn.style.display = 'none';
-                
-                showStatus("Wallet connected successfully! Please ensure you are on Sepolia network.");
-            } catch (error) {
-                console.error("Connection failed", error);
-                showStatus("Connection failed. Check console.");
+    // ============ 连接主逻辑 ============
+    async function connectWallet() {
+        if (typeof window.ethereum === "undefined") {
+            setStatus("未检测到 MetaMask：请先安装 MetaMask 浏览器插件，然后刷新本页。", "error");
+            return;
+        }
+        connectWalletBtn.disabled = true;
+        setStatus("正在请求 MetaMask 授权，请在钱包弹窗中点击「Connect / 连接」…", "info");
+        try {
+            // 1. 请求账户（这一步会弹出钱包授权窗口）
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            if (!accounts || accounts.length === 0) {
+                setStatus("MetaMask 未返回任何账户：请确认钱包已解锁且已创建账户后重试。", "error");
+                return;
             }
-        } else {
-            showStatus("Please install MetaMask!");
-        }
-    });
 
-    document.getElementById('adoptBtn').addEventListener('click', async () => {
-        const cropType = document.getElementById('cropTypeInput').value;
-        if (!cropType) { showStatus("Please enter a crop type!"); return; }
-        
-        try {
-            showStatus("Waiting for MetaMask confirmation...");
-            const tx = await contract.adoptPlot(cropType);
-            showStatus("Transaction sent. Waiting for blockchain confirmation...");
-            await tx.wait();
-            showStatus("Plot adopted successfully!");
-        } catch (error) {
-            console.error(error);
-            showStatus("Transaction failed or rejected.");
-        }
-    });
+            // 2. 检查并切换网络到 Sepolia
+            const chainId = await window.ethereum.request({ method: "eth_chainId" });
+            if (chainId !== SEPOLIA_CHAIN_ID) {
+                setStatus("当前网络不是 Sepolia，正在请求切换网络…", "info");
+                try {
+                    await window.ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: SEPOLIA_CHAIN_ID }]
+                    });
+                } catch (switchErr) {
+                    if (switchErr.code === 4902) { // 钱包里还没有 Sepolia，需要添加
+                        setStatus("钱包中没有 Sepolia 网络，正在添加…", "info");
+                        await window.ethereum.request({
+                            method: "wallet_addEthereumChain",
+                            params: [SEPOLIA_PARAMS]
+                        });
+                    } else {
+                        throw switchErr;
+                    }
+                }
+            }
 
-    document.getElementById('getPlotBtn').addEventListener('click', async () => {
-        const id = document.getElementById('plotIdInput').value;
-        if (!id) return;
-        
-        try {
-            const data = await contract.getPlot(id);
-            document.getElementById('infoId').innerText = data[0].toString();
-            document.getElementById('infoOwner').innerText = data[1];
-            document.getElementById('infoCrop').innerText = data[2];
-            document.getElementById('infoStatus').innerText = data[3];
-            document.getElementById('plotInfo').style.display = 'block';
-        } catch (error) {
-            console.error(error);
-            showStatus("Plot not found. Check the ID.");
-        }
-    });
+            // 3. 初始化 provider / signer / contract
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            signer = provider.getSigner();
+            const address = await signer.getAddress();
+            contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-    document.getElementById('updateBtn').addEventListener('click', async () => {
-        const id = document.getElementById('updateIdInput').value;
-        const newStatus = document.getElementById('newStatusInput').value;
-        if (!id || !newStatus) { showStatus("Please fill in all fields!"); return; }
-        
-        try {
-            showStatus("Waiting for MetaMask confirmation...");
-            const tx = await contract.updatePlotStatus(id, newStatus);
-            showStatus("Transaction sent. Waiting for blockchain confirmation...");
-            await tx.wait();
-            showStatus("Status updated successfully!");
-        } catch (error) {
-            console.error(error);
-            showStatus("Update failed. Are you the owner of this plot?");
+            // 4. 更新界面
+            walletAddressSpan.innerText = address;
+            walletNetworkSpan.innerText = "Sepolia (11155111)";
+            walletInfo.style.display = "block";
+            appControls.style.display = "block";
+            connectWalletBtn.style.display = "none";
+            setStatus("连接成功！当前网络：Sepolia。可以开始使用 DApp 了。", "success");
+        } catch (err) {
+            console.error("Connection failed:", err);
+            let msg = (err && err.message) ? err.message : String(err);
+            if (err && err.code === 4001) {
+                msg = "你在 MetaMask 弹窗中拒绝了连接请求。请再次点击连接并在弹窗中点「Connect」。";
+            }
+            setStatus("连接失败：" + msg + "（详细信息见 F12 控制台）", "error");
+            connectWalletBtn.disabled = false;
         }
-    });
+    }
+
+    connectWalletBtn.addEventListener("click", connectWallet);
+
+    // ============ 监听钱包状态变化 ============
+    if (window.ethereum && window.ethereum.on) {
+        window.ethereum.on("accountsChanged", function (accounts) {
+            if (!accounts || accounts.length === 0) {
+                // 账户被移除 = 断开
+                setStatus("MetaMask 账户已断开，请重新连接。", "error");
+                connectWalletBtn.style.display = "";
+                walletInfo.style.display = "none";
+                appControls.style.display = "none";
+            } else if (provider) {
+                walletAddressSpan.innerText = accounts[0];
+            }
+        });
+        window.ethereum.on("chainChanged", function (chainId) {
+            if (provider && chainId !== SEPOLIA_CHAIN_ID) {
+                setStatus("注意：钱包已切换到其他网络，请切回 Sepolia 后再操作。", "error");
+                walletNetworkSpan.innerText = "非 Sepolia 网络 (chainId=" + chainId + ")";
+            } else if (provider) {
+                walletNetworkSpan.innerText = "Sepolia (11155111)";
+                setStatus("已切回 Sepolia 网络。", "success");
+            }
+        });
+    }
 </script>
 
 </body>
