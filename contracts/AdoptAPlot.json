@@ -1,0 +1,125 @@
+[
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "string",
+                           "name":  "_cropType",
+                           "type":  "string"
+                       }
+                   ],
+        "name":  "adoptPlot",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "uint256",
+                           "name":  "_id",
+                           "type":  "uint256"
+                       }
+                   ],
+        "name":  "getPlot",
+        "outputs":  [
+                        {
+                            "internalType":  "uint256",
+                            "name":  "",
+                            "type":  "uint256"
+                        },
+                        {
+                            "internalType":  "address",
+                            "name":  "",
+                            "type":  "address"
+                        },
+                        {
+                            "internalType":  "string",
+                            "name":  "",
+                            "type":  "string"
+                        },
+                        {
+                            "internalType":  "string",
+                            "name":  "",
+                            "type":  "string"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+
+                   ],
+        "name":  "plotCount",
+        "outputs":  [
+                        {
+                            "internalType":  "uint256",
+                            "name":  "",
+                            "type":  "uint256"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "uint256",
+                           "name":  "",
+                           "type":  "uint256"
+                       }
+                   ],
+        "name":  "plots",
+        "outputs":  [
+                        {
+                            "internalType":  "uint256",
+                            "name":  "id",
+                            "type":  "uint256"
+                        },
+                        {
+                            "internalType":  "address",
+                            "name":  "owner",
+                            "type":  "address"
+                        },
+                        {
+                            "internalType":  "string",
+                            "name":  "cropType",
+                            "type":  "string"
+                        },
+                        {
+                            "internalType":  "string",
+                            "name":  "status",
+                            "type":  "string"
+                        },
+                        {
+                            "internalType":  "bool",
+                            "name":  "isActive",
+                            "type":  "bool"
+                        }
+                    ],
+        "stateMutability":  "view",
+        "type":  "function"
+    },
+    {
+        "inputs":  [
+                       {
+                           "internalType":  "uint256",
+                           "name":  "_id",
+                           "type":  "uint256"
+                       },
+                       {
+                           "internalType":  "string",
+                           "name":  "_newStatus",
+                           "type":  "string"
+                       }
+                   ],
+        "name":  "updatePlotStatus",
+        "outputs":  [
+
+                    ],
+        "stateMutability":  "nonpayable",
+        "type":  "function"
+    }
+]

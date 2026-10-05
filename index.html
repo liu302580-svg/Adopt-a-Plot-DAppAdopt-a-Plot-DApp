@@ -39,7 +39,13 @@
         <p><strong>Status:</strong> Connected ✅</p>
         <p><strong>Your Address:</strong> <span id="walletAddress"></span></p>
         <p><strong>Network:</strong> <span id="walletNetwork"></span></p>
+        <p><strong>Total Plots on Chain:</strong> <span id="plotCountSpan">-</span></p>
     </div>
+</div>
+
+<!-- 交易结果链接（Etherscan） -->
+<div id="txBox" style="display:none;width:100%;max-width:600px;margin-bottom:20px;text-align:center;">
+    <a id="txLink" href="#" target="_blank" rel="noopener" style="font-size:14px;word-break:break-all;color:#2980b9;"></a>
 </div>
 
 <div class="container" id="appControls" style="display: none;">
@@ -74,7 +80,8 @@
     const contractABI = [
         "function adoptPlot(string memory _cropType) public",
         "function updatePlotStatus(uint _id, string memory _newStatus) public",
-        "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)"
+        "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)",
+        "function plotCount() public view returns (uint256)"
     ];
     const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
     const SEPOLIA_PARAMS = {
@@ -116,13 +123,32 @@
     const walletInfo = document.getElementById("walletInfo");
     const walletAddressSpan = document.getElementById("walletAddress");
     const walletNetworkSpan = document.getElementById("walletNetwork");
+    const plotCountSpan = document.getElementById("plotCountSpan");
     const appControls = document.getElementById("appControls");
+    const txBox = document.getElementById("txBox");
+    const txLink = document.getElementById("txLink");
 
     function setStatus(msg, kind) {
         statusBar.innerText = msg;
         statusBar.className = "success";
         if (kind === "error") statusBar.className = "error";
         if (kind === "info") statusBar.className = "";
+    }
+
+    function showTxLink(hash) {
+        txLink.href = "https://sepolia.etherscan.io/tx/" + hash;
+        txLink.innerText = "✅ View transaction on Sepolia Etherscan: " + hash;
+        txBox.style.display = "block";
+    }
+
+    async function refreshPlotCount() {
+        if (!contract) return;
+        try {
+            const n = await contract.plotCount();
+            plotCountSpan.innerText = n.toString();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     // ============ 连接主逻辑 ============
@@ -176,6 +202,7 @@
             appControls.style.display = "block";
             connectWalletBtn.style.display = "none";
             setStatus("连接成功！当前网络：Sepolia。可以开始使用 DApp 了。", "success");
+            refreshPlotCount();
         } catch (err) {
             console.error("Connection failed:", err);
             let msg = (err && err.message) ? err.message : String(err);
@@ -188,6 +215,65 @@
     }
 
     connectWalletBtn.addEventListener("click", connectWallet);
+
+    // ============ 1. 领养新地块（写交易） ============
+    document.getElementById('adoptBtn').addEventListener('click', async () => {
+        const cropType = document.getElementById('cropTypeInput').value;
+        if (!cropType) { setStatus("Please enter a crop type!", "error"); return; }
+
+        try {
+            setStatus("Waiting for MetaMask confirmation...", "info");
+            const tx = await contract.adoptPlot(cropType);
+            setStatus("Transaction sent: " + tx.hash + " — waiting for blockchain confirmation...");
+            await tx.wait();
+            showTxLink(tx.hash);
+            setStatus("Plot adopted successfully! Crop: " + cropType, "success");
+            document.getElementById('cropTypeInput').value = "";
+            refreshPlotCount();
+        } catch (error) {
+            console.error(error);
+            setStatus("Transaction failed or rejected: " + ((error && error.message) ? error.message : error), "error");
+        }
+    });
+
+    // ============ 2. 查询地块详情（读） ============
+    document.getElementById('getPlotBtn').addEventListener('click', async () => {
+        const id = document.getElementById('plotIdInput').value;
+        if (!id) { setStatus("Please enter a plot ID!", "error"); return; }
+
+        try {
+            const data = await contract.getPlot(id);
+            document.getElementById('infoId').innerText = data[0].toString();
+            document.getElementById('infoOwner').innerText = data[1];
+            document.getElementById('infoCrop').innerText = data[2];
+            document.getElementById('infoStatus').innerText = data[3];
+            document.getElementById('plotInfo').style.display = 'block';
+            setStatus("Plot #" + id + " loaded from the blockchain.", "success");
+        } catch (error) {
+            console.error(error);
+            setStatus("Plot not found. Check the ID.", "error");
+        }
+    });
+
+    // ============ 3. 更新地块状态（写交易，仅地主） ============
+    document.getElementById('updateBtn').addEventListener('click', async () => {
+        const id = document.getElementById('updateIdInput').value;
+        const newStatus = document.getElementById('newStatusInput').value;
+        if (!id || !newStatus) { setStatus("Please fill in all fields!", "error"); return; }
+
+        try {
+            setStatus("Waiting for MetaMask confirmation...", "info");
+            const tx = await contract.updatePlotStatus(id, newStatus);
+            setStatus("Transaction sent: " + tx.hash + " — waiting for blockchain confirmation...");
+            await tx.wait();
+            showTxLink(tx.hash);
+            setStatus("Status updated successfully for plot #" + id + " → " + newStatus, "success");
+            document.getElementById('newStatusInput').value = "";
+        } catch (error) {
+            console.error(error);
+            setStatus("Update failed. Are you the owner of this plot? " + ((error && error.message) ? error.message : error), "error");
+        }
+    });
 
     // ============ 监听钱包状态变化 ============
     if (window.ethereum && window.ethereum.on) {
