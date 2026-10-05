@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adopt-a-Plot: Organic Farming DApp</title>
-    <!-- 使用了最新、最稳定的 CDN 库地址，确保可以完美加载 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" type="application/javascript"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -145,7 +144,7 @@
     });
 
     document.getElementById('updateBtn').addEventListener('click', async () => {
-        const id = document.getElementById('updateIdInput`).value;
+        const id = document.getElementById('updateIdInput').value;
         const newStatus = document.getElementById('newStatusInput').value;
         if (!id || !newStatus) { showStatus("Please fill in all fields!"); return; }
         
