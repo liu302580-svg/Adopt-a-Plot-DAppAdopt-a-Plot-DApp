@@ -1,191 +1,212 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f6f5ef">
-  <title>Plot &amp; Parcel — On-chain farm plots</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{--ink:#20271f;--muted:#777e71;--green:#416d43;--green-dark:#284b2e;--lime:#d9ed82;--paper:#f6f5ef;--white:#fffefa;--line:#e4e4d8;--orange:#d98553;--shadow:0 14px 36px #26361d0c}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px "DM Sans",sans-serif}button,input{font:inherit}button{cursor:pointer}
-    .topbar{height:76px;padding:0 max(5vw,24px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#f6f5efe8;position:sticky;top:0;z-index:5;backdrop-filter:blur(16px)}
-    .brand{display:flex;align-items:center;gap:11px;font:800 20px Manrope,sans-serif;letter-spacing:-.8px}.brandmark{width:35px;height:35px;border-radius:12px;background:var(--green);display:grid;place-items:center;color:var(--lime);font-size:20px}
-    .nav{display:flex;align-items:center;gap:30px;color:#666d62;font-size:13px}.nav a{color:inherit;text-decoration:none}.nav a:hover{color:var(--green)}
-    .wallet-btn{border:0;border-radius:9px;background:var(--green);color:white;font-weight:700;padding:12px 17px;transition:.2s}.wallet-btn:hover,.primary:hover{background:var(--green-dark);transform:translateY(-1px)}.wallet-btn:disabled,button:disabled{opacity:.6;cursor:wait}
-    main{max-width:1180px;margin:auto;padding:0 28px 72px}.hero{padding:67px 0 47px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:52px}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);text-transform:uppercase;letter-spacing:1.6px;font-size:10px;font-weight:800}.dot{height:7px;width:7px;background:#9cb83f;border-radius:100%}
-    h1,h2,h3,p{margin-top:0}h1{font:700 clamp(42px,5vw,68px)/1.03 Manrope,sans-serif;letter-spacing:-3.5px;margin:20px 0}.hero h1 em{font-style:normal;color:var(--green)}
-    .lead{color:#747a6e;line-height:1.75;max-width:490px;font-size:16px}.hero-actions{display:flex;gap:12px;align-items:center;margin-top:27px}.primary,.secondary{padding:13px 18px;border-radius:9px;font-weight:700}.primary{border:0;background:var(--green);color:white;transition:.2s}.secondary{border:1px solid #d6d9ca;color:var(--ink);background:transparent}.secondary:hover{background:#eeeee5}
-    .hero-art{height:330px;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(160deg,#b6c999 0%,#819b6d 44%,#59794e 100%);box-shadow:var(--shadow)}
-    .sun{position:absolute;right:55px;top:37px;width:76px;height:76px;background:#f4d898;border-radius:50%;box-shadow:0 0 0 18px #f4d89825}
-    .hill{position:absolute;border-radius:50% 50% 0 0/28% 28% 0 0;bottom:-120px;width:130%;height:230px;left:-15%;background:#456b48;transform:rotate(-8deg)}
-    .hill.two{bottom:-166px;left:22%;background:#34593c;transform:rotate(9deg)}
-    .rows{position:absolute;inset:140px 25px 0;z-index:1;transform:rotate(-11deg);display:flex;gap:12px;justify-content:center}
-    .row{width:31px;height:220px;border-radius:50%;background:repeating-linear-gradient(0deg,#c8cf8b 0 6px,#748c54 7px 12px);opacity:.86}
-    .art-label{position:absolute;left:22px;top:22px;color:#fff;background:#233d2b73;padding:10px 13px;border:1px solid #ffffff45;border-radius:9px;font-size:11px;z-index:2;backdrop-filter:blur(8px)}
-    .stat-float{position:absolute;right:18px;bottom:18px;z-index:3;background:#fffefa;padding:13px 16px;border-radius:12px;box-shadow:0 8px 22px #182d1d33}.stat-float small{color:var(--muted);display:block;font-size:10px}.stat-float strong{font:700 20px Manrope}
-    #statusBar{display:flex;gap:9px;align-items:center;padding:12px 15px;border:1px solid #dedfce;border-radius:10px;background:#fffdf6;color:#767760;font-size:12px;margin:0 0 24px}
-    #statusBar:before{content:"";width:7px;height:7px;background:#d8a64a;border-radius:50%;flex:none}#statusBar.success{background:#f0f5e8;border-color:#dce6c9;color:#416144}#statusBar.success:before{background:#67a25d}#statusBar.error{background:#fff0eb;border-color:#f0cec0;color:#a8543b}#statusBar.error:before{background:#d36d4b}
-    .dashboard{display:grid;grid-template-columns:1fr 1.45fr;gap:18px}.panel{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:23px;box-shadow:var(--shadow)}
-    .panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.kicker{font:500 10px "DM Mono",monospace;text-transform:uppercase;letter-spacing:1.1px;color:#929688}.panel h2{font:700 18px Manrope,sans-serif;letter-spacing:-.5px;margin:5px 0 0}.pill{background:#eef1e6;border-radius:30px;padding:6px 9px;font:500 10px "DM Mono";color:var(--green)}
-    .wallet-card{background:#f3f4ed;border-radius:11px;padding:15px;margin-top:9px}.wallet-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #e3e5d9}.wallet-row:last-child{border:0}.wallet-row span:first-child{color:var(--muted);font-size:12px}.wallet-row strong{font:500 11px "DM Mono",monospace;text-align:right;word-break:break-all}
-    .wallet-action{width:100%;margin-top:14px}.chainlink{font-size:11px;color:var(--green);text-decoration:none}
-    .plots-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.plot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .plot-card{border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;min-height:130px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.2s}.plot-card:hover{border-color:#9bae7e;transform:translateY(-2px)}
-    .plot-top{display:flex;justify-content:space-between;align-items:center}.plot-icon{width:30px;height:30px;border-radius:9px;background:#edf2df;display:grid;place-items:center;font-size:16px}.plot-id{font:500 10px "DM Mono";color:#929688}.plot-card strong{font:700 13px Manrope;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.plot-bottom{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px}.tag{background:#f3f3eb;border-radius:20px;padding:4px 7px;color:#687252}.empty{grid-column:1/-1;border:1px dashed #d8dbce;padding:24px;text-align:center;border-radius:10px;color:var(--muted);font-size:12px}
-    .section-title{display:flex;justify-content:space-between;align-items:end;margin:44px 0 16px}.section-title h2{font:700 26px Manrope;letter-spacing:-1px;margin:5px 0}.section-title p{margin:0;color:var(--muted);font-size:12px}
-    .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.tool{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:21px;box-shadow:var(--shadow)}.tool-number{font:500 10px "DM Mono";color:var(--green)}.tool h3{font:700 17px Manrope;margin:9px 0 7px}.tool p{color:var(--muted);font-size:12px;line-height:1.55;min-height:38px}
-    label{font-size:11px;font-weight:700;color:#5b6257;display:block;margin:13px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #dedfd3;border-radius:8px;outline:none;background:#fffefa;color:var(--ink);font-size:13px}input:focus{border-color:#78956c;box-shadow:0 0 0 3px #416d4313}input::placeholder{color:#a4a79b}
-    .tool button{width:100%;margin-top:13px}.readout{display:none;margin-top:14px;border-radius:9px;padding:12px;background:#f2f4eb;font-size:11px;line-height:1.8;overflow-wrap:anywhere}.readout strong{color:#687252}
-    #txBox{display:none;background:#ebf2e4;border:1px solid #d7e2ca;padding:13px 16px;border-radius:10px;margin:0 0 18px;font-size:11px;overflow-wrap:anywhere}#txLink{color:var(--green);text-decoration:none}
-    footer{border-top:1px solid var(--line);padding:22px 5vw;display:flex;justify-content:space-between;color:#858a7e;font-size:11px}footer a{color:var(--green);text-decoration:none}
-    @media(max-width:800px){.hero{grid-template-columns:1fr;gap:28px;padding-top:45px}.hero-art{height:270px}.dashboard{grid-template-columns:1fr}.tools-grid{grid-template-columns:1fr}.plot-grid{grid-template-columns:repeat(2,1fr)}.nav{display:none}}
-    @media(max-width:480px){main{padding:0 17px 50px}.topbar{padding:0 17px;height:66px}.brand{font-size:17px}.hero h1{letter-spacing:-2px}.hero-actions{align-items:stretch;flex-direction:column}.plot-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:17px}.section-title{align-items:flex-start;gap:12px;flex-direction:column}footer{gap:8px;flex-direction:column}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f4ec">
+<title>Adopt-a-Plot — Grow something good</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<style>
+:root{--paper:#f5f4ec;--card:#fffefa;--ink:#20291f;--muted:#71796d;--green:#31583a;--deep:#193a27;--lime:#d6e68b;--line:#e2e3d6;--orange:#d7895e;--shadow:0 18px 48px #23371e12}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px "DM Sans",sans-serif}button,input{font:inherit}button{cursor:pointer}
+a{color:inherit}.wrap{width:min(1180px,calc(100% - 48px));margin:auto}
+.site-head{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;background:#f5f4ecef;backdrop-filter:blur(14px);padding:0 max(24px,calc((100vw - 1180px)/2))}
+.brand{display:flex;gap:10px;align-items:center;text-decoration:none;font-weight:700;font-size:17px;letter-spacing:-.5px}.brand-icon{width:34px;height:34px;border-radius:11px;background:var(--deep);color:var(--lime);display:grid;place-items:center;font-size:19px}
+.nav{display:flex;gap:28px;font-size:12px;color:#687164}.nav a{text-decoration:none}.nav a:hover{color:var(--green)}
+.btn{border:0;border-radius:8px;background:var(--green);color:white;padding:12px 17px;font-size:13px;font-weight:700;transition:transform .18s,background .18s}.btn:hover{background:var(--deep);transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:wait;transform:none}.btn-quiet{border:1px solid #cbd1c2;background:transparent;color:var(--ink)}.btn-quiet:hover{background:#e9ecdf;color:var(--deep)}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:58px;align-items:center;padding:70px 0 52px}
+.eyebrow{text-transform:uppercase;letter-spacing:1.8px;font-size:10px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:9px}.eyebrow:before{content:"";height:7px;width:7px;border-radius:50%;background:#a8bd53}
+h1,h2,h3,p{margin-top:0}h1{font:600 clamp(44px,5.2vw,70px)/1.03 "Playfair Display",serif;letter-spacing:-2px;margin:18px 0 20px;max-width:600px}h1 em{color:var(--green);font-weight:500}
+.lead{font-size:16px;line-height:1.75;color:var(--muted);max-width:490px}.hero-actions{display:flex;gap:12px;margin-top:27px}
+.illustration{height:355px;background:#dbe3ca;border-radius:18px;overflow:hidden;position:relative;box-shadow:var(--shadow)}.illustration svg{width:100%;height:100%;display:block}.ill-label{position:absolute;top:17px;left:17px;background:#fdfdf0dc;border:1px solid #fff;padding:8px 11px;border-radius:7px;font-size:10px;color:#59624e;letter-spacing:.3px}
+.total-float{position:absolute;bottom:16px;right:16px;background:var(--card);border-radius:11px;padding:11px 15px;box-shadow:0 6px 24px #1c34221b}.total-float small{display:block;font-size:9px;letter-spacing:1px;color:var(--muted)}.total-float strong{font:600 23px "Playfair Display";color:var(--deep)}
+#notice{border:1px solid #e5dfc7;border-radius:9px;background:#fffbed;color:#736747;padding:11px 14px;font-size:12px;margin:0 0 18px;display:flex;align-items:center;gap:9px}#notice:before{content:"";width:7px;height:7px;border-radius:50%;background:#d2a84f;flex:none}#notice.success{background:#eff4e7;border-color:#dce8ca;color:#476145}#notice.success:before{background:#6d9c57}#notice.error{background:#fff0eb;border-color:#f0d1c4;color:#a8533a}#notice.error:before{background:#d36d4b}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin:42px 0 16px}.section-head h2{font:600 29px "Playfair Display";letter-spacing:-.6px;margin:7px 0 4px}.section-head p{font-size:12px;color:var(--muted);margin:0}.label-sm{font:500 10px "DM Mono",monospace;color:#858c7d;letter-spacing:1px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:24px;box-shadow:var(--shadow)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}.card h3{font:600 20px "Playfair Display";margin:5px 0 0}.count-badge,.network-badge{border-radius:50px;padding:6px 9px;background:#eef1e5;color:var(--green);font:500 10px "DM Mono",monospace}
+.card-copy{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 20px;max-width:440px}
+.wallet-card{background:#f2f3eb;border-radius:9px;padding:13px 14px;margin:15px 0}.wallet-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #e1e3d8}.wallet-row:last-child{border:0}.wallet-row span{font-size:11px;color:var(--muted)}.wallet-row strong{font:500 11px "DM Mono",monospace;text-align:right;overflow-wrap:anywhere}.wide{width:100%}
+.field{margin:14px 0}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:6px;color:#515d4e}.field input{width:100%;border:1px solid #d9ddcf;border-radius:7px;padding:12px;background:#fffefa;color:var(--ink);outline:none;font-size:13px}.field input:focus{border-color:#78926c;box-shadow:0 0 0 3px #31583a18}.field input::placeholder{color:#9ca294}
+.result{display:none;background:#f1f3e9;border-radius:9px;padding:14px;margin-top:16px;font-size:11px}.result-row{display:grid;grid-template-columns:75px 1fr;gap:10px;padding:6px 0;border-bottom:1px solid #dfe3d7}.result-row:last-child{border:0}.result-row span:first-child{color:var(--muted)}.result-row span:last-child{overflow-wrap:anywhere}.owner-note{display:none;margin-top:12px;padding-top:13px;border-top:1px solid #dce1d2}
+#txline{display:none;margin:0 0 18px;border:1px solid #d8e5cd;background:#eef4e7;padding:12px 14px;border-radius:9px;font-size:12px}#txline a{color:var(--green);font-weight:700}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.step{padding:18px;background:#ebece1;border-radius:11px;min-height:122px}.step span{font:500 10px "DM Mono";color:var(--green)}.step h3{font:600 16px "Playfair Display";margin:8px 0 5px}.step p{font-size:11px;color:var(--muted);line-height:1.5;margin:0}
+.contract-band{margin-top:34px;border-radius:13px;background:var(--deep);color:#f5f4ec;padding:20px 23px;display:flex;justify-content:space-between;align-items:center;gap:16px}.contract-band p{margin:5px 0 0;font-size:11px;color:#c2cbbd;overflow-wrap:anywhere}.contract-band a{color:var(--lime);font-size:11px;white-space:nowrap}
+footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858b7d;font-size:10px}footer a{color:var(--green)}
+.toast{position:fixed;right:22px;bottom:20px;z-index:9;width:min(370px,calc(100vw - 32px));border:1px solid var(--line);border-radius:11px;background:var(--card);box-shadow:0 14px 45px #172d1d24;padding:15px 17px;display:none}.toast.show{display:block}.toast strong{font:600 16px "Playfair Display"}.toast p{font-size:11px;color:var(--muted);margin:4px 0}.toast a{font-size:11px;color:var(--green)}
+@media(max-width:800px){.hero{grid-template-columns:1fr;gap:27px;padding-top:48px}.illustration{height:300px}.nav{display:none}.grid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{width:calc(100% - 32px)}.site-head{height:66px;padding:0 16px}.brand{font-size:15px}.site-head>.btn{padding:10px 12px;font-size:11px}.hero{padding:38px 0}.hero-actions{flex-direction:column}.illustration{height:245px}.card{padding:18px}.section-head{align-items:flex-start;gap:8px;flex-direction:column}.how{grid-template-columns:1fr}.contract-band{align-items:flex-start;flex-direction:column}footer{gap:8px;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+</style>
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="#" style="color:inherit;text-decoration:none"><span class="brandmark">✳</span> plot &amp; parcel</a>
-  <nav class="nav"><a href="#plots">The plots</a><a href="#tools">Farm tools</a><a href="#about">About</a></nav>
-  <button id="topConnectBtn" class="wallet-btn">Connect wallet ↗</button>
+<header class="site-head">
+  <a class="brand" href="#"><span class="brand-icon" aria-hidden="true">✳</span> Adopt-a-Plot</a>
+  <nav class="nav" aria-label="Main navigation"><a href="#garden">Your garden</a><a href="#tools">Plot tools</a><a href="#how">How it works</a></nav>
+  <button id="connectBtn" class="btn">Connect wallet ↗</button>
 </header>
-<main>
+<main class="wrap">
   <section class="hero">
     <div>
-      <span class="eyebrow"><i class="dot"></i> A little more connected to the earth</span>
-      <h1>Good things<br>grow <em>together.</em></h1>
-      <p class="lead">Adopt a piece of the garden, follow its progress, and keep a shared record of every plot on the Sepolia blockchain.</p>
-      <div class="hero-actions"><button class="primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore the garden <span aria-hidden="true">↓</span></button><button class="secondary" onclick="connectWallet()">Connect your wallet</button></div>
+      <span class="eyebrow">A community garden on Ethereum Sepolia</span>
+      <h1>Plant an idea.<br><em>Watch it grow.</em></h1>
+      <p class="lead">Adopt a virtual crop plot, give it a name, and record its growing journey on a shared blockchain ledger. Small beginnings, open records.</p>
+      <div class="hero-actions"><a class="btn" href="#tools" style="text-decoration:none">Explore the plot tools ↓</a><a class="btn btn-quiet" href="#how" style="text-decoration:none">How it works</a></div>
     </div>
-    <div class="hero-art" aria-label="Illustration of rows in a green garden">
-      <div class="sun"></div><div class="rows"><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i></div><div class="hill"></div><div class="hill two"></div>
-      <div class="art-label">A community garden, recorded on-chain</div><div class="stat-float"><small>GARDEN PLOTS</small><strong><span id="heroCount">—</span> <span style="font-size:12px">plots</span></strong></div>
+    <div class="illustration" role="img" aria-label="Illustrated garden beds with young vegetables beneath the morning sun">
+      <span class="ill-label">THE COMMUNITY GARDEN · SEPOLIA</span>
+      <svg viewBox="0 0 620 430" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#dce8d1"/><stop offset="1" stop-color="#f3e9c9"/></linearGradient><linearGradient id="soil" x2="0" y2="1"><stop stop-color="#98704d"/><stop offset="1" stop-color="#6e5138"/></linearGradient></defs>
+        <rect width="620" height="430" fill="url(#sky)"/>
+        <circle cx="492" cy="105" r="48" fill="#f0cc7b"/><circle cx="492" cy="105" r="65" fill="#f0cc7b" opacity=".17"/>
+        <path d="M0 220 Q110 160 220 224T440 205T620 215V430H0Z" fill="#a9bd8b"/>
+        <path d="M0 265Q130 220 260 270T520 250T620 263V430H0Z" fill="#77966a"/>
+        <path d="M0 322Q130 285 260 320T500 310T620 325V430H0Z" fill="#557650"/>
+        <g opacity=".8" fill="#f8f4df"><path d="M83 108q12-25 36-6 24-17 37 7H83z"/><path d="M183 151q9-19 28-5 20-14 31 5h-59z"/></g>
+        <g transform="translate(64 255)"><path d="M0 40l223-24 31 117L28 161z" fill="#314f35"/><path d="M14 45l194-21 22 85-188 24z" fill="url(#soil)"/><path d="M14 45l194-21 7 22-196 23z" fill="#d0a06a"/>
+          <g stroke="#507d47" stroke-width="5" fill="none"><path d="M48 100Q36 73 50 51"/><path d="M90 95Q77 63 94 41"/><path d="M139 88Q130 57 146 37"/><path d="M183 82Q173 55 191 32"/></g>
+          <g fill="#84a961"><ellipse cx="39" cy="66" rx="17" ry="8" transform="rotate(30 39 66)"/><ellipse cx="61" cy="76" rx="18" ry="8" transform="rotate(-28 61 76)"/><ellipse cx="82" cy="57" rx="18" ry="8" transform="rotate(28 82 57)"/><ellipse cx="105" cy="68" rx="18" ry="8" transform="rotate(-28 105 68)"/><ellipse cx="136" cy="54" rx="19" ry="9" transform="rotate(25 136 54)"/><ellipse cx="155" cy="65" rx="18" ry="8" transform="rotate(-23 155 65)"/><ellipse cx="180" cy="48" rx="18" ry="8" transform="rotate(25 180 48)"/><ellipse cx="197" cy="59" rx="18" ry="8" transform="rotate(-25 197 59)"/></g></g>
+        <g transform="translate(316 238)"><path d="M0 44l220-18 27 118-216 26z" fill="#29482f"/><path d="M13 49l190-16 20 86-183 21z" fill="url(#soil)"/><path d="M13 49l190-16 6 23-190 20z" fill="#d0a06a"/>
+          <g stroke="#476f43" stroke-width="5" fill="none"><path d="M46 105Q35 69 50 45"/><path d="M91 98Q78 62 96 36"/><path d="M143 91Q129 55 148 31"/><path d="M183 84Q171 52 191 29"/></g>
+          <g fill="#9db96d"><ellipse cx="37" cy="64" rx="18" ry="8" transform="rotate(30 37 64)"/><ellipse cx="59" cy="76" rx="17" ry="8" transform="rotate(-27 59 76)"/><ellipse cx="83" cy="53" rx="19" ry="9" transform="rotate(28 83 53)"/><ellipse cx="105" cy="68" rx="19" ry="8" transform="rotate(-24 105 68)"/><ellipse cx="137" cy="47" rx="19" ry="9" transform="rotate(26 137 47)"/><ellipse cx="158" cy="62" rx="18" ry="8" transform="rotate(-24 158 62)"/><ellipse cx="181" cy="44" rx="18" ry="8" transform="rotate(26 181 44)"/><ellipse cx="201" cy="58" rx="17" ry="8" transform="rotate(-22 201 58)"/></g>
+          <g fill="#d97850"><circle cx="84" cy="50" r="7"/><circle cx="147" cy="41" r="8"/><circle cx="190" cy="40" r="6"/></g></g>
+        <path d="M18 365q120-35 232 0t230-1q60-20 140 2v64H0z" fill="#476944"/>
+        <path d="M282 430l8-70h18l8 70" fill="#ddbc77"/><path d="M273 362q25-22 50 0" fill="#e7cd91"/>
+      </svg>
+      <div class="total-float"><small>ON-CHAIN PLOTS</small><strong id="plotCount">—</strong></div>
     </div>
   </section>
-  <div id="statusBar" role="status" aria-live="polite">Connect MetaMask to explore and manage garden plots on Sepolia.</div>
-  <div id="txBox"><a id="txLink" href="#" target="_blank" rel="noopener"></a></div>
-  <section class="dashboard">
-    <article class="panel">
-      <div class="panel-head"><div><span class="kicker">Your session</span><h2>Wallet &amp; network</h2></div><span class="pill" id="connectionPill">NOT CONNECTED</span></div>
-      <div class="wallet-card">
-        <div class="wallet-row"><span>Address</span><strong id="walletAddress">Connect to view</strong></div>
-        <div class="wallet-row"><span>Network</span><strong id="walletNetwork">Sepolia testnet</strong></div>
-        <div class="wallet-row"><span>Plots on chain</span><strong id="plotCountSpan">—</strong></div>
-      </div>
-      <button id="connectWalletBtn" class="wallet-btn wallet-action">Connect MetaMask ↗</button>
-      <p style="font-size:10px;color:#909487;margin:11px 0 0">Transactions are approved in your wallet and recorded on Sepolia.</p>
-    </article>
-    <article class="panel" id="plots">
-      <div class="panel-head"><div><span class="kicker">The community garden</span><h2>Plots on the chain</h2></div><span class="pill" id="plotPill">LIVE · SEPOLIA</span></div>
-      <div class="plots-toolbar"><span style="font-size:11px;color:var(--muted)">Select a plot to view its record</span><a class="chainlink" href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener">View contract ↗</a></div>
-      <div class="plot-grid" id="plotGrid"><div class="empty">Connect your wallet to load plots from the blockchain.</div></div>
-    </article>
+  <div id="notice" role="status" aria-live="polite">Anyone can explore records. Connect MetaMask to adopt a plot or update one you own.</div>
+  <div id="txline"><span id="txmessage">Transaction confirmed.</span> · <a id="txlink" href="#" target="_blank" rel="noopener noreferrer">View on Sepolia Etherscan ↗</a></div>
+  <section id="garden">
+    <div class="section-head"><div><span class="eyebrow">A little patch of the internet</span><h2>Your garden, on-chain</h2><p>Read plot records freely; wallet approval is only needed for changes.</p></div><span class="count-badge">ETHEREUM · SEPOLIA</span></div>
+    <div class="grid" id="tools">
+      <article class="card">
+        <div class="card-head"><div><span class="label-sm">01 · Start something</span><h3>Adopt a plot</h3></div><span aria-hidden="true">🌱</span></div>
+        <p class="card-copy">Create a new plot record with the name of a crop you’d like to grow.</p>
+        <div class="field"><label for="cropName">Crop or plot name</label><input id="cropName" type="text" maxlength="80" placeholder="e.g. Heirloom tomatoes" autocomplete="off"></div>
+        <button id="adoptBtn" class="btn wide" disabled>Connect wallet to adopt ↗</button>
+      </article>
+      <article class="card">
+        <div class="card-head"><div><span class="label-sm">02 · See what’s growing</span><h3>Find a plot</h3></div><span aria-hidden="true">⌕</span></div>
+        <p class="card-copy">Look up a plot’s on-chain crop name, owner, and latest status. Plot IDs start at 1.</p>
+        <div class="field"><label for="plotId">Plot ID</label><input id="plotId" type="number" min="1" step="1" placeholder="e.g. 1"></div>
+        <button id="lookupBtn" class="btn btn-quiet wide">View plot record</button>
+        <div id="plotResult" class="result" aria-live="polite">
+          <div class="result-row"><span>Plot</span><span id="resultId"></span></div>
+          <div class="result-row"><span>Crop</span><span id="resultCrop"></span></div>
+          <div class="result-row"><span>Status</span><span id="resultStatus"></span></div>
+          <div class="result-row"><span>Owner</span><span id="resultOwner"></span></div>
+          <div id="ownerControls" class="owner-note"><label for="newStatus">Growing status · owner only</label><div class="field"><input id="newStatus" type="text" maxlength="100" placeholder="e.g. First leaves appeared"></div><button id="updateBtn" class="btn wide">Save status update ↗</button></div>
+        </div>
+      </article>
+    </div>
   </section>
-  <div class="section-title" id="tools"><div><span class="eyebrow"><i class="dot"></i> From your little corner</span><h2>Garden tools</h2><p>Read and update plot records directly through the smart contract.</p></div><span class="pill">3 ON-CHAIN ACTIONS</span></div>
-  <section class="tools-grid">
-    <article class="tool"><span class="tool-number">01 / ADOPT</span><h3>Start a new plot</h3><p>Give your plot a crop name and create its permanent on-chain record.</p>
-      <label for="cropTypeInput">Crop or plot name</label><input id="cropTypeInput" type="text" maxlength="80" placeholder="e.g. Heirloom tomatoes">
-      <button id="adoptBtn" class="primary">Adopt this plot ↗</button>
-    </article>
-    <article class="tool"><span class="tool-number">02 / EXPLORE</span><h3>Find a plot record</h3><p>Look up the current crop, owner, and growing status for any plot ID.</p>
-      <label for="plotIdInput">Plot ID</label><input id="plotIdInput" type="number" min="1" placeholder="e.g. 1">
-      <button id="getPlotBtn" class="secondary">Look up plot</button>
-      <div class="readout" id="plotInfo"><strong>Plot <span id="infoId"></span></strong><br>Crop: <span id="infoCrop"></span><br>Status: <span id="infoStatus"></span><br>Owner: <span id="infoOwner"></span></div>
-    </article>
-    <article class="tool"><span class="tool-number">03 / TEND</span><h3>Update a growing note</h3><p>Plot owners can record milestones as their crops grow and are harvested.</p>
-      <label for="updateIdInput">Plot ID</label><input id="updateIdInput" type="number" min="1" placeholder="e.g. 1">
-      <label for="newStatusInput">New status</label><input id="newStatusInput" type="text" maxlength="80" placeholder="e.g. Seedlings planted">
-      <button id="updateBtn" class="primary">Save growing note ↗</button>
-    </article>
+  <section id="how">
+    <div class="section-head"><div><span class="eyebrow">Simple as planting a seed</span><h2>How this garden works</h2><p>One small smart contract, three clear actions.</p></div></div>
+    <div class="how">
+      <article class="step"><span>01 / ADOPT</span><h3>Name your crop</h3><p>Your wallet creates a new plot record and becomes its owner.</p></article>
+      <article class="step"><span>02 / EXPLORE</span><h3>Read the record</h3><p>Plot names, owners, and updates can be looked up by anyone.</p></article>
+      <article class="step"><span>03 / TEND</span><h3>Share a milestone</h3><p>The owner can record a new status, with every change visible on-chain.</p></article>
+    </div>
   </section>
-  <section id="about" style="margin-top:38px;background:#e9ecdf;border-radius:14px;padding:21px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px">
-    <div><span class="kicker">Why blockchain?</span><p style="margin:7px 0 0;color:#626b5e;font-size:12px;line-height:1.65;max-width:750px">Plot ownership and growing updates are written to a public, shared ledger. Anyone can verify the record; only the plot owner can update its status. This prototype uses Sepolia test ETH, so transactions are for demonstration only.</p></div>
-    <a class="chainlink" style="white-space:nowrap" href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener">Contract ↗</a>
-  </section>
+  <section class="contract-band"><div><span class="label-sm" style="color:#bdcaaa">A transparent little garden</span><p>Records live on Sepolia, Ethereum’s public test network. This is a virtual farming demonstration, not a claim about physical land or crop verification.</p></div><a href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener noreferrer">Inspect the smart contract ↗</a></section>
 </main>
-<footer><span>© Plot &amp; Parcel · A community garden experiment</span><span>Built on <a href="https://ethereum.org/en/developers/docs/networks/#sepolia" target="_blank" rel="noopener">Ethereum Sepolia</a></span></footer>
+<footer class="wrap"><span>© Adopt-a-Plot · A community garden prototype</span><span>Built on <a href="https://ethereum.org/en/developers/docs/networks/#sepolia">Ethereum Sepolia</a></span></footer>
+<div id="toast" class="toast" role="status" aria-live="polite"><strong id="toastTitle"></strong><p id="toastText"></p></div>
 <script>
-  const contractAddress = "0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f";
-  const contractABI = [
-    "function adoptPlot(string memory _cropType) public",
-    "function updatePlotStatus(uint _id, string memory _newStatus) public",
-    "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)",
-    "function plotCount() public view returns (uint256)"
-  ];
-  const SEPOLIA_CHAIN_ID = "0xaa36a7";
-  const SEPOLIA_PARAMS = {chainId:SEPOLIA_CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
-  const ETHER_CDNS = ["https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js","https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js","https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"];
-  function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement("script");s.src=src;s.onload=()=>{s.remove();resolve()};s.onerror=()=>{s.remove();reject(Error("load failed"))};document.head.appendChild(s)})}
-  async function ensureEthers(){if(window.ethers)return true;for(const src of ETHER_CDNS){try{await loadScript(src);if(window.ethers)return true}catch(e){}}setStatus("Could not load the ethers library. Check your connection and refresh.");return false}
-  let provider,signer,contract;
-  const $=id=>document.getElementById(id);
-  function setStatus(message,kind="info"){$("statusBar").textContent=message;$("statusBar").className=kind==="success"?"success":kind==="error"?"error":""}
-  function shortAddress(value){return value?value.slice(0,6)+"…"+value.slice(-4):"—"}
-  function showTxLink(hash){$("txLink").href="https://sepolia.etherscan.io/tx/"+hash;$("txLink").textContent="Transaction confirmed · View on Sepolia Etherscan ↗";$("txBox").style.display="block"}
-  function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-  async function renderPlots(total){
-    $("plotGrid").innerHTML="";
-    if(total===0){$("plotGrid").innerHTML='<div class="empty">No plots yet. Be the first to adopt one.</div>';return}
-    const count=Math.min(total,30);
-    for(let id=1;id<=count;id++){
-      try{
-        const plot=await contract.getPlot(id), crop=plot[2]||"Untitled plot", status=plot[3]||"Growing";
-        const card=document.createElement("button");card.type="button";card.className="plot-card";card.setAttribute("aria-label","View plot "+id);
-        card.innerHTML='<span class="plot-top"><span class="plot-icon">🌱</span><span class="plot-id">PLOT #'+id+'</span></span><strong title="'+escapeHTML(crop)+'">'+escapeHTML(crop)+'</strong><span class="plot-bottom"><span class="tag">'+escapeHTML(status)+'</span><span>↗</span></span>';
-        card.addEventListener("click",()=>loadPlot(id));$("plotGrid").appendChild(card);
-      }catch(e){}
+"use strict";
+const ADDRESS="0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f";
+const CHAIN_ID="0xaa36a7";
+const ABI=[
+  "function adoptPlot(string memory _cropType) public",
+  "function updatePlotStatus(uint _id, string memory _newStatus) public",
+  "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)",
+  "function plotCount() public view returns (uint256)"
+];
+const SEPOLIA={chainId:CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
+const $=id=>document.getElementById(id);
+const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn");
+let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer;
+function setNotice(message,type=""){notice.textContent=message;notice.className=type}
+function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
+function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
+function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
+function refreshButtons(){const onSepolia=!!provider&&provider.networkVersion==="11155111";adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
+async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—"}}
+async function connectWallet(){
+  if(!window.ethereum){setNotice("MetaMask wasn’t detected. Install the wallet extension, then refresh this page.","error");return}
+  connectBtn.disabled=true;
+  try{
+    await window.ethereum.request({method:"eth_requestAccounts"});
+    let chain=await window.ethereum.request({method:"eth_chainId"});
+    if(chain!==CHAIN_ID){
+      try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID}]})}
+      catch(e){if(e.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA]})}else throw e}
     }
-    if(!$("plotGrid").children.length)$("plotGrid").innerHTML='<div class="empty">Plots could not be loaded. Check the Sepolia RPC and try again.</div>';
-    if(total>count){const more=document.createElement("div");more.className="empty";more.textContent="Showing the first "+count+" of "+total+" plots."; $("plotGrid").appendChild(more)}
+    provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);
+    refreshButtons();setNotice("Wallet connected. You’re on Sepolia and ready to tend your plots.","success");await loadCount();
+    if(viewedPlotId)await showPlot(viewedPlotId);
+  }catch(e){console.error(e);setNotice(e.code===4001?"Wallet connection was cancelled. You can try again.":"Couldn’t connect: "+(e.message||String(e)),"error")}
+  finally{connectBtn.disabled=false}
+}
+async function showPlot(id){
+  try{
+    const data=await (new ethers.Contract(ADDRESS,ABI,readProvider)).getPlot(id);
+    viewedPlotId=id;$("resultId").textContent=data[0].toString();$("resultCrop").textContent=data[2]||"—";$("resultStatus").textContent=data[3]||"—";$("resultOwner").textContent=data[1];$("plotResult").style.display="block";
+    const isOwner=!!userAddress&&String(data[1]).toLowerCase()===userAddress.toLowerCase();
+    $("ownerControls").style.display=isOwner?"block":"none";
+    if(isOwner)$("newStatus").value="";
+    setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
+  }catch(e){console.warn(e);viewedPlotId=null;$("plotResult").style.display="none";setNotice("Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.","error")}
+}
+async function sendTransaction(button,label,action){
+  button.disabled=true;const previous=button.textContent;
+  try{
+    setNotice("Approve the transaction in MetaMask…");const tx=await action();
+    setNotice("Transaction submitted. Waiting for Sepolia confirmation…");const receipt=await tx.wait();
+    $("txmessage").textContent=label+" confirmed";$("txlink").href="https://sepolia.etherscan.io/tx/"+tx.hash;$("txline").style.display="block";
+    setNotice(label+" confirmed on Sepolia.","success");await loadCount();if(viewedPlotId)await showPlot(viewedPlotId);
+  }catch(e){console.error(e);setNotice(e.code===4001?"Transaction cancelled in MetaMask.":(e.reason||e.message||"Transaction failed."),"error")}
+  finally{button.disabled=false;button.textContent=previous}
+}
+connectBtn.addEventListener("click",connectWallet);
+adoptBtn.addEventListener("click",async()=>{
+  if(!userAddress)return connectWallet();
+  const crop=$("cropName").value.trim();if(!crop){setNotice("Add a crop or plot name first.","error");return}
+  await sendTransaction(adoptBtn,"Plot adopted",()=>contract.adoptPlot(crop));
+  if($("notice").className==="success")$("cropName").value="";
+});
+$("lookupBtn").addEventListener("click",async()=>{const id=validId();if(!id){setNotice("Enter a valid plot ID. Plot IDs start at 1.","error");return}await showPlot(id)});
+$("plotId").addEventListener("keydown",e=>{if(e.key==="Enter")$("lookupBtn").click()});
+$("updateBtn").addEventListener("click",async()=>{
+  const status=$("newStatus").value.trim();if(!viewedPlotId||!userAddress){setNotice("Connect the plot owner’s wallet and look up the plot again.","error");return}if(!status){setNotice("Enter a growing status first.","error");return}
+  await sendTransaction($("updateBtn"),"Status update",()=>contract.updatePlotStatus(viewedPlotId,status));
+});
+async function refreshWalletState(){
+  if(!window.ethereum)return;
+  provider=new ethers.providers.Web3Provider(window.ethereum);
+  const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
+  signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
+  refreshButtons();
+  const network=await provider.getNetwork();
+  if(network.chainId!==11155111){$("networkBadge");setNotice(userAddress?"Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"Connect to Sepolia to make changes. Public plot records remain readable.");}
+  else if(userAddress)setNotice("Wallet connected to Sepolia. You’re ready to tend your plots.","success");
+  if(viewedPlotId)await showPlot(viewedPlotId);
+}
+async function init(){
+  if(!window.ethers){setNotice("The wallet library could not load. Check your connection and refresh.","error");return}
+  readProvider=new ethers.providers.JsonRpcProvider("https://rpc.sepolia.org");
+  loadCount();
+  if(window.ethereum){
+    try{await refreshWalletState()}catch(e){console.warn(e)}
+    window.ethereum.on("accountsChanged",()=>refreshWalletState());
+    window.ethereum.on("chainChanged",()=>window.location.reload());
   }
-  async function refreshPlotCount(){if(!contract)return;try{const total=(await contract.plotCount()).toNumber();$("plotCountSpan").textContent=total;$("heroCount").textContent=total;await renderPlots(total)}catch(e){console.error(e);$("plotGrid").innerHTML='<div class="empty">Unable to read plots from Sepolia right now.</div>'}}
-  async function connectWallet(){
-    if(!window.ethereum){setStatus("MetaMask was not detected. Install or open the extension, then try again.","error");return}
-    ["connectWalletBtn","topConnectBtn"].forEach(id=>$(id).disabled=true);
-    try{
-      if(!await ensureEthers())return;
-      setStatus("Approve the connection request in MetaMask…");
-      await window.ethereum.request({method:"eth_requestAccounts"});
-      let chainId=await window.ethereum.request({method:"eth_chainId"});
-      if(chainId!==SEPOLIA_CHAIN_ID){
-        try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:SEPOLIA_CHAIN_ID}]})}
-        catch(err){if(err.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA_PARAMS]})}else throw err}
-      }
-      provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();
-      const address=await signer.getAddress();contract=new ethers.Contract(contractAddress,contractABI,signer);
-      $("walletAddress").textContent=shortAddress(address);$("walletAddress").title=address;$("walletNetwork").textContent="Sepolia · 11155111";
-      $("connectionPill").textContent="CONNECTED";$("connectionPill").style.background="#e7f2df";
-      $("connectWalletBtn").textContent="Wallet connected ✓";$("topConnectBtn").textContent=shortAddress(address);
-      setStatus("Wallet connected to Sepolia. Garden records are live.","success");await refreshPlotCount();
-    }catch(err){console.error(err);setStatus(err.code===4001?"Connection was cancelled in MetaMask. You can try again.":"Could not connect: "+(err.message||String(err)),"error")}
-    finally{["connectWalletBtn","topConnectBtn"].forEach(id=>$(id).disabled=false)}
-  }
-  $("connectWalletBtn").addEventListener("click",connectWallet);$("topConnectBtn").addEventListener("click",connectWallet);
-  async function loadPlot(id){
-    if(!contract){setStatus("Connect MetaMask first to read plot records.","error");return}
-    try{const data=await contract.getPlot(id);$("infoId").textContent=data[0].toString();$("infoOwner").textContent=data[1];$("infoCrop").textContent=data[2];$("infoStatus").textContent=data[3];$("plotInfo").style.display="block";$("plotIdInput").value=id;setStatus("Plot #"+id+" loaded from Sepolia.","success")}
-    catch(e){$("plotInfo").style.display="none";setStatus("Could not find plot #"+id+". Check the ID and try again.","error")}
-  }
-  $("getPlotBtn").addEventListener("click",async()=>{const id=$("plotIdInput").value;if(!id||Number(id)<1){setStatus("Enter a valid plot ID.","error");return}await loadPlot(id)});
-  $("adoptBtn").addEventListener("click",async()=>{
-    if(!contract){setStatus("Connect MetaMask first to adopt a plot.","error");return}
-    const crop=$("cropTypeInput").value.trim();if(!crop){setStatus("Enter a crop or plot name first.","error");return}
-    try{$("adoptBtn").disabled=true;setStatus("Confirm the adoption transaction in MetaMask…");const tx=await contract.adoptPlot(crop);setStatus("Transaction submitted. Waiting for Sepolia confirmation…");await tx.wait();showTxLink(tx.hash);setStatus("Your plot has been adopted: "+crop,"success");$("cropTypeInput").value="";await refreshPlotCount()}
-    catch(e){console.error(e);setStatus(e.code===4001?"Transaction cancelled in MetaMask.":"Adoption failed: "+(e.reason||e.message||String(e)),"error")}finally{$("adoptBtn").disabled=false}
-  });
-  $("updateBtn").addEventListener("click",async()=>{
-    if(!contract){setStatus("Connect MetaMask first to update a plot.","error");return}
-    const id=$("updateIdInput").value,status=$("newStatusInput").value.trim();if(!id||Number(id)<1||!status){setStatus("Enter a valid plot ID and a new growing status.","error");return}
-    try{$("updateBtn").disabled=true;setStatus("Confirm the status update in MetaMask…");const tx=await contract.updatePlotStatus(id,status);setStatus("Transaction submitted. Waiting for Sepolia confirmation…");await tx.wait();showTxLink(tx.hash);setStatus("Plot #"+id+" updated to “"+status+"”.","success");$("newStatusInput").value="";await refreshPlotCount()}
-    catch(e){console.error(e);setStatus(e.code===4001?"Transaction cancelled in MetaMask.":"Update failed. Only the plot owner can change this record. "+(e.reason||""),"error")}finally{$("updateBtn").disabled=false}
-  });
-  if(window.ethereum&&window.ethereum.on){
-    window.ethereum.on("accountsChanged",accounts=>{if(!accounts.length){contract=signer=provider=null;$("walletAddress").textContent="Connect to view";$("connectionPill").textContent="NOT CONNECTED";$("connectWalletBtn").textContent="Connect MetaMask ↗";$("topConnectBtn").textContent="Connect wallet ↗";$("plotGrid").innerHTML='<div class="empty">Connect your wallet to load plots from the blockchain.</div>';setStatus("Wallet disconnected. Connect MetaMask to continue.","error")}else if(provider){$("walletAddress").textContent=shortAddress(accounts[0]);$("walletAddress").title=accounts[0]}});
-    window.ethereum.on("chainChanged",chainId=>{if(chainId!==SEPOLIA_CHAIN_ID){contract=null;$("walletNetwork").textContent="Wrong network";setStatus("Switch MetaMask back to Sepolia to use the garden.","error")}else if(provider){provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();contract=new ethers.Contract(contractAddress,contractABI,signer);$("walletNetwork").textContent="Sepolia · 11155111";setStatus("Connected to Sepolia.","success");refreshPlotCount()}});
-  }
+}
+window.addEventListener("DOMContentLoaded",init);
 </script>
 </body>
 </html>
