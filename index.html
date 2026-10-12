@@ -25,11 +25,11 @@ h1,h2,h3,p{margin-top:0}h1{font:600 clamp(44px,5.2vw,70px)/1.03 "Playfair Displa
 .total-float{position:absolute;bottom:16px;right:16px;background:var(--card);border-radius:11px;padding:11px 15px;box-shadow:0 6px 24px #1c34221b}.total-float small{display:block;font-size:9px;letter-spacing:1px;color:var(--muted)}.total-float strong{font:600 23px "Playfair Display";color:var(--deep)}
 #notice{border:1px solid #e5dfc7;border-radius:9px;background:#fffbed;color:#736747;padding:11px 14px;font-size:12px;margin:0 0 18px;display:flex;align-items:center;gap:9px}#notice:before{content:"";width:7px;height:7px;border-radius:50%;background:#d2a84f;flex:none}#notice.success{background:#eff4e7;border-color:#dce8ca;color:#476145}#notice.success:before{background:#6d9c57}#notice.error{background:#fff0eb;border-color:#f0d1c4;color:#a8533a}#notice.error:before{background:#d36d4b}
 .section-head{display:flex;justify-content:space-between;align-items:end;margin:42px 0 16px}.section-head h2{font:600 29px "Playfair Display";letter-spacing:-.6px;margin:7px 0 4px}.section-head p{font-size:12px;color:var(--muted);margin:0}.label-sm{font:500 10px "DM Mono",monospace;color:#858c7d;letter-spacing:1px;text-transform:uppercase}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:24px;box-shadow:var(--shadow)}
 .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}.card h3{font:600 20px "Playfair Display";margin:5px 0 0}.count-badge,.network-badge{border-radius:50px;padding:6px 9px;background:#eef1e5;color:var(--green);font:500 10px "DM Mono",monospace}
 .card-copy{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 20px;max-width:440px}
 .wallet-card{background:#f2f3eb;border-radius:9px;padding:13px 14px;margin:15px 0}.wallet-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #e1e3d8}.wallet-row:last-child{border:0}.wallet-row span{font-size:11px;color:var(--muted)}.wallet-row strong{font:500 11px "DM Mono",monospace;text-align:right;overflow-wrap:anywhere}.wide{width:100%}
-.field{margin:14px 0}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:6px;color:#515d4e}.field input{width:100%;border:1px solid #d9ddcf;border-radius:7px;padding:12px;background:#fffefa;color:var(--ink);outline:none;font-size:13px}.field input:focus{border-color:#78926c;box-shadow:0 0 0 3px #31583a18}.field input::placeholder{color:#9ca294}
+.field{margin:14px 0}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:6px;color:#515d4e}.field input,.field select,.field textarea{width:100%;border:1px solid #d9ddcf;border-radius:7px;padding:12px;background:#fffefa;color:var(--ink);outline:none;font:13px "DM Sans",sans-serif}.field textarea{resize:vertical;min-height:94px;line-height:1.5}.field input:focus,.field select:focus,.field textarea:focus{border-color:#78926c;box-shadow:0 0 0 3px #31583a18}.field input::placeholder,.field textarea::placeholder{color:#9ca294}#seedProgress{min-height:1.3em;margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.5}#seedProgress.success{color:var(--green);font-weight:700}#seedProgress.error{color:#a8533a;font-weight:700}
 .result{display:none;background:#f1f3e9;border-radius:9px;padding:14px;margin-top:16px;font-size:11px}.result-row{display:grid;grid-template-columns:75px 1fr;gap:10px;padding:6px 0;border-bottom:1px solid #dfe3d7}.result-row:last-child{border:0}.result-row span:first-child{color:var(--muted)}.result-row span:last-child{overflow-wrap:anywhere}.owner-note{display:none;margin-top:12px;padding-top:13px;border-top:1px solid #dce1d2}
 #txline{display:none;margin:0 0 18px;border:1px solid #d8e5cd;background:#eef4e7;padding:12px 14px;border-radius:9px;font-size:12px}#txline a{color:var(--green);font-weight:700}
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.step{padding:18px;background:#ebece1;border-radius:11px;min-height:122px}.step span{font:500 10px "DM Mono";color:var(--green)}.step h3{font:600 16px "Playfair Display";margin:8px 0 5px}.step p{font-size:11px;color:var(--muted);line-height:1.5;margin:0}
@@ -116,6 +116,24 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
         <button id="statusCardBtn" class="btn wide" disabled>Connect wallet to update ↗</button>
         <p class="card-copy" style="margin:12px 0 0">Tip: look up the plot first to check its ID and owner.</p>
       </article>
+      <article class="card">
+        <div class="card-head"><div><span class="label-sm">04 · Gather the harvest</span><h3>Record a harvest</h3></div><span aria-hidden="true">✳</span></div>
+        <p class="card-copy">Save a yield report as this plot’s current status. Only its owner can update the record.</p>
+        <div class="field"><label for="harvestPlotId">Plot ID</label><input id="harvestPlotId" type="number" min="1" step="1" placeholder="e.g. 1"></div>
+        <div class="field"><label for="harvestQuantity">Harvest quantity</label><input id="harvestQuantity" type="number" min="0.001" step="0.001" placeholder="e.g. 4.5"></div>
+        <div class="field"><label for="harvestUnit">Unit</label><select id="harvestUnit"><option value="kg">Kilograms (kg)</option><option value="lb">Pounds (lb)</option><option value="baskets">Baskets</option></select></div>
+        <div class="field"><label for="harvestNote">Harvest note · optional</label><input id="harvestNote" type="text" maxlength="40" placeholder="e.g. First ripe tomatoes"></div>
+        <button id="harvestBtn" class="btn wide" disabled>Connect wallet to report ↗</button>
+        <p class="card-copy" style="margin:12px 0 0">This replaces the current status, up to 100 characters.</p>
+      </article>
+      <article class="card">
+        <div class="card-head"><div><span class="label-sm">05 · Plant a little more</span><h3>Seed collection</h3></div><span aria-hidden="true">🌾</span></div>
+        <p class="card-copy">Adopt 2–3 crop plots in one guided flow. Each plot is a separate transaction and needs its own MetaMask approval.</p>
+        <div class="field"><label for="seedNames">Crop names · one per line</label><textarea id="seedNames" maxlength="260" rows="3" aria-describedby="seedHelp" placeholder="Cherry tomatoes&#10;Sweet basil"></textarea></div>
+        <p id="seedHelp" class="card-copy">Enter two or three names, up to 80 characters each. This is sequential, not one atomic transaction.</p>
+        <button id="seedBatchBtn" class="btn wide" disabled>Connect wallet to plant ↗</button>
+        <p id="seedProgress" role="status" aria-live="polite"></p>
+      </article>
     </div>
   </section>
   <section id="directory">
@@ -165,13 +183,14 @@ const ABI=[
 const SEPOLIA={chainId:CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
 const $=id=>document.getElementById(id);
 const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn"),statusCardBtn=$("statusCardBtn");
+const harvestBtn=$("harvestBtn"),seedBatchBtn=$("seedBatchBtn");
 let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null,mineOnly=false;
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
 function syncMyPlotsToggle(){const b=$("myPlotsToggle");b.disabled=!userAddress;b.title=userAddress?"Show only plots owned by this wallet":"Connect wallet to filter your plots";b.classList.toggle("active",mineOnly);b.setAttribute("aria-pressed",String(mineOnly));b.textContent=mineOnly?"My plots · On":"My plots ♧"}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
-function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";statusCardBtn.disabled=!userAddress||!onSepolia;statusCardBtn.textContent=!userAddress?"Connect wallet to update ↗":!onSepolia?"Switch to Sepolia to update":"Save growing update ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
+function refreshButtons(){const onSepolia=currentChainId===11155111,ready=!!userAddress&&onSepolia;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";statusCardBtn.disabled=!userAddress||!onSepolia;statusCardBtn.textContent=!userAddress?"Connect wallet to update ↗":!onSepolia?"Switch to Sepolia to update":"Save growing update ↗";harvestBtn.disabled=!ready;harvestBtn.textContent=!userAddress?"Connect wallet to report ↗":!onSepolia?"Switch to Sepolia to report":"Record harvest report ↗";seedBatchBtn.disabled=!ready;seedBatchBtn.textContent=!userAddress?"Connect wallet to plant ↗":!onSepolia?"Switch to Sepolia to plant":"Adopt seed collection ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
 async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.")}}
 let directoryItems=[];
 const directoryGrid=$("directoryGrid"),directoryStatus=$("directoryStatus"),directoryCount=$("directoryCount");
@@ -271,6 +290,61 @@ $("statusCardBtn").addEventListener("click",async()=>{
   viewedPlotId=id;
   await sendTransaction(statusCardBtn,"Status update",()=>contract.updatePlotStatus(id,status));
   if($("notice").className==="success")$("statusValue").value="";
+});
+$("harvestBtn").addEventListener("click",async()=>{
+  const id=Number($("harvestPlotId").value),quantity=Number($("harvestQuantity").value),unit=$("harvestUnit").value,note=$("harvestNote").value.trim();
+  if(!userAddress){setNotice("Connect the plot owner’s MetaMask wallet first.","error");return}
+  if(currentChainId!==11155111){setNotice("Switch MetaMask to Sepolia before recording a harvest.","error");return}
+  if(!Number.isSafeInteger(id)||id<1){setNotice("Enter a valid plot ID. Plot IDs start at 1.","error");return}
+  if(!Number.isFinite(quantity)||quantity<=0){setNotice("Enter a harvest quantity greater than zero.","error");return}
+  if(!["kg","lb","baskets"].includes(unit)){setNotice("Choose a valid harvest unit.","error");return}
+  if(note.length>40){setNotice("Keep the harvest note to 40 characters or fewer.","error");return}
+  const rounded=Number(quantity.toFixed(3));
+  if(rounded<=0){setNotice("Harvest quantity must be at least 0.001.","error");return}
+  const amountText=rounded.toFixed(3).replace(/\.?0+$/,"");
+  const report="Harvest: "+amountText+" "+unit+(note?" · "+note:"");
+  if(report.length>100){setNotice("Shorten the note so the report is at most 100 characters.","error");return}
+  viewedPlotId=id;
+  await sendTransaction(harvestBtn,"Harvest report",()=>contract.updatePlotStatus(id,report));
+  if($("notice").className==="success"){$("harvestQuantity").value="";$("harvestNote").value=""}
+});
+$("seedBatchBtn").addEventListener("click",async()=>{
+  if(!userAddress){setNotice("Connect your Sepolia wallet before planting a seed collection.","error");return}
+  if(currentChainId!==11155111){setNotice("Switch MetaMask to Sepolia before planting a seed collection.","error");return}
+  const crops=$("seedNames").value.split(/[\r\n]+/).map(value=>value.trim()).filter(Boolean);
+  if(crops.length<2||crops.length>3){setNotice("Enter two or three crop names, one per line.","error");return}
+  if(crops.some(name=>name.length>80)){setNotice("Each crop name must be 80 characters or fewer.","error");return}
+  if(new Set(crops.map(name=>name.toLowerCase())).size!==crops.length){setNotice("Remove duplicate crop names before continuing.","error");return}
+  seedBatchBtn.disabled=true;$("seedNames").disabled=true;
+  $("seedProgress").className="";$("seedProgress").textContent="Preparing sequential transactions…";
+  let completed=0,lastTx=null,failure=null;
+  try{
+    for(let i=0;i<crops.length;i++){
+      $("seedProgress").textContent="Plot "+(i+1)+" of "+crops.length+": approve the adoption in MetaMask.";
+      setNotice("Approve crop "+(i+1)+" of "+crops.length+" in MetaMask…");
+      const tx=await contract.adoptPlot(crops[i]);lastTx=tx;
+      $("seedProgress").textContent="Plot "+(i+1)+" of "+crops.length+": waiting for Sepolia confirmation…";
+      const receipt=await tx.wait();
+      if(receipt.status!==1)throw new Error("The transaction for “"+crops[i]+"” did not confirm.");
+      completed++;
+      $("txmessage").textContent="Seed plot "+completed+" confirmed";
+      $("txlink").href="https://sepolia.etherscan.io/tx/"+tx.hash;$("txline").style.display="block";
+    }
+  }catch(e){failure=e;console.error("Seed collection stopped",e)}
+  finally{
+    $("seedNames").disabled=false;seedBatchBtn.disabled=false;refreshButtons();
+    if(completed>0){await loadCount();await loadDirectory()}
+    if(failure){
+      $("seedProgress").className="error";
+      const reason=failure.code===4001||failure.code==="ACTION_REJECTED"?"MetaMask approval was rejected.":(failure.reason||failure.message||"The transaction failed.");
+      $("seedProgress").textContent=completed+" of "+crops.length+" plots adopted. Stopped: "+reason;
+      setNotice(completed+" of "+crops.length+" plots were adopted; remaining transactions were stopped.","error");
+    }else{
+      $("seedNames").value="";$("seedProgress").className="success";
+      $("seedProgress").textContent="All "+completed+" plots were adopted. Each was a separate confirmed transaction.";
+      setNotice("Seed collection confirmed: "+completed+" new plots on Sepolia.","success");
+    }
+  }
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
