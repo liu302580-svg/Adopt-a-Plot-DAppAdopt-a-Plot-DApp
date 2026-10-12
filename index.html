@@ -129,12 +129,12 @@ const ABI=[
 const SEPOLIA={chainId:CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
 const $=id=>document.getElementById(id);
 const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn");
-let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer;
+let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null;
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
-function refreshButtons(){const onSepolia=!!provider&&provider.networkVersion==="11155111";adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
+function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
 async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—"}}
 async function connectWallet(){
   if(!window.ethereum){setNotice("MetaMask wasn’t detected. Install the wallet extension, then refresh this page.","error");return}
@@ -146,7 +146,7 @@ async function connectWallet(){
       try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID}]})}
       catch(e){if(e.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA]})}else throw e}
     }
-    provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);
+    provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);currentChainId=(await provider.getNetwork()).chainId;
     refreshButtons();setNotice("Wallet connected. You’re on Sepolia and ready to tend your plots.","success");await loadCount();
     if(viewedPlotId)await showPlot(viewedPlotId);
   }catch(e){console.error(e);setNotice(e.code===4001?"Wallet connection was cancelled. You can try again.":"Couldn’t connect: "+(e.message||String(e)),"error")}
@@ -191,8 +191,8 @@ async function refreshWalletState(){
   const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
   refreshButtons();
-  const network=await provider.getNetwork();
-  if(network.chainId!==11155111){$("networkBadge");setNotice(userAddress?"Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"Connect to Sepolia to make changes. Public plot records remain readable.");}
+  const network=await provider.getNetwork();currentChainId=network.chainId;refreshButtons();
+  if(network.chainId!==11155111){setNotice(userAddress?"Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"Connect to Sepolia to make changes. Public plot records remain readable.");}
   else if(userAddress)setNotice("Wallet connected to Sepolia. You’re ready to tend your plots.","success");
   if(viewedPlotId)await showPlot(viewedPlotId);
 }
