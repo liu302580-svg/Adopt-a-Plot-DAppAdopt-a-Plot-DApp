@@ -36,6 +36,11 @@ h1,h2,h3,p{margin-top:0}h1{font:600 clamp(44px,5.2vw,70px)/1.03 "Playfair Displa
 .contract-band{margin-top:34px;border-radius:13px;background:var(--deep);color:#f5f4ec;padding:20px 23px;display:flex;justify-content:space-between;align-items:center;gap:16px}.contract-band p{margin:5px 0 0;font-size:11px;color:#c2cbbd;overflow-wrap:anywhere}.contract-band a{color:var(--lime);font-size:11px;white-space:nowrap}
 footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858b7d;font-size:10px}footer a{color:var(--green)}
 .toast{position:fixed;right:22px;bottom:20px;z-index:9;width:min(370px,calc(100vw - 32px));border:1px solid var(--line);border-radius:11px;background:var(--card);box-shadow:0 14px 45px #172d1d24;padding:15px 17px;display:none}.toast.show{display:block}.toast strong{font:600 16px "Playfair Display"}.toast p{font-size:11px;color:var(--muted);margin:4px 0}.toast a{font-size:11px;color:var(--green)}
+.directory-panel{padding:24px}.directory-toolbar{display:grid;grid-template-columns:1fr 190px auto;gap:9px;margin:18px 0 12px}.directory-toolbar input,.directory-toolbar select{min-width:0;border:1px solid #d9ddcf;border-radius:7px;padding:11px 12px;background:#fffefa;color:var(--ink);font:12px "DM Sans",sans-serif}.directory-toolbar input:focus,.directory-toolbar select:focus{outline:2px solid #9fb58c;outline-offset:1px}.directory-status{font-size:11px;color:var(--muted);margin:0 0 12px}.directory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.plot-entry{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:152px;border:1px solid var(--line);border-radius:10px;background:#fffefa;padding:14px;transition:transform .18s,border-color .18s,box-shadow .18s}.plot-entry:hover{transform:translateY(-2px);border-color:#a9b899;box-shadow:0 8px 22px #20351b10}.plot-entry-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.plot-entry-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#e9efd9;font-size:17px}.plot-entry-id{font:500 10px "DM Mono";color:#858c7d}.plot-entry-name{font:600 16px "Playfair Display";overflow-wrap:anywhere;color:var(--deep)}.plot-entry-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;color:var(--muted);font-size:10px}.plot-status{border-radius:30px;background:#eef1e5;color:var(--green);padding:4px 8px;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.directory-empty{grid-column:1/-1;border:1px dashed #d8ddcf;border-radius:9px;padding:24px;text-align:center;color:var(--muted);font-size:12px}
+.inspiration{margin-top:45px}.inspiration-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px}.inspiration-head h2{font:600 29px "Playfair Display";margin:7px 0 4px}.inspiration-head p{color:var(--muted);font-size:12px;margin:0}.inspiration-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.inspo-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}.inspo-photo{height:205px;position:relative;background:#e1e6d5;overflow:hidden}.inspo-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .4s}.inspo-card:hover .inspo-photo img{transform:scale(1.035)}.inspo-photo span{position:absolute;left:12px;top:12px;border-radius:40px;background:#fffefaed;color:#42543f;padding:6px 9px;font:500 9px "DM Mono";letter-spacing:.7px}.inspo-copy{padding:14px 16px 16px}.inspo-copy h3{font:600 17px "Playfair Display";margin:0 0 5px}.inspo-copy p{color:var(--muted);font-size:11px;line-height:1.55;margin:0}.inspo-caption{font-size:10px;color:#858c7d;margin:10px 0 0}
+.contract-actions{display:flex;align-items:center;gap:17px}.contract-actions .btn{border:1px solid #72846e;background:transparent;color:#f5f4ec;padding:10px 13px}.contract-actions .btn:hover{background:#2a5034}
+@media(max-width:800px){.directory-grid{grid-template-columns:repeat(2,1fr)}.inspiration-grid{grid-template-columns:1fr 1fr}.inspo-card:last-child{display:none}}
+@media(max-width:520px){.directory-toolbar{grid-template-columns:1fr 1fr}.directory-toolbar input{grid-column:1/-1}.directory-toolbar button{grid-column:1/-1}.directory-grid{grid-template-columns:1fr 1fr}.plot-entry{min-height:142px;padding:11px}.inspo-grid{grid-template-columns:1fr}.inspo-card:last-child{display:block}.inspo-photo{height:190px}.inspiration-head{align-items:flex-start;flex-direction:column;gap:6px}.contract-actions{align-items:flex-start;flex-direction:column;gap:11px}}
 @media(max-width:800px){.hero{grid-template-columns:1fr;gap:27px;padding-top:48px}.illustration{height:300px}.nav{display:none}.grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:calc(100% - 32px)}.site-head{height:66px;padding:0 16px}.brand{font-size:15px}.site-head>.btn{padding:10px 12px;font-size:11px}.hero{padding:38px 0}.hero-actions{flex-direction:column}.illustration{height:245px}.card{padding:18px}.section-head{align-items:flex-start;gap:8px;flex-direction:column}.how{grid-template-columns:1fr}.contract-band{align-items:flex-start;flex-direction:column}footer{gap:8px;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
@@ -104,6 +109,18 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
       </article>
     </div>
   </section>
+  <section id="directory">
+    <div class="section-head"><div><span class="eyebrow">Every record has a place</span><h2>Browse the garden</h2><p>Search the latest on-chain plot records. Select a plot to open its full details.</p></div><span id="directoryCount" class="count-badge">SEPOLIA DIRECTORY</span></div>
+    <div class="card directory-panel">
+      <div class="directory-toolbar">
+        <input id="directorySearch" type="search" placeholder="Search crops, status, or owner…" aria-label="Search plot records">
+        <select id="directoryFilter" aria-label="Filter by growing status"><option value="">All statuses</option></select>
+        <button id="directoryRefresh" class="btn btn-quiet" type="button">Refresh records ↻</button>
+      </div>
+      <p id="directoryStatus" class="directory-status" role="status" aria-live="polite">Connect to Sepolia or wait for the public network reader to load records.</p>
+      <div id="directoryGrid" class="directory-grid"><div class="directory-empty">Plot records will appear here.</div></div>
+    </div>
+  </section>
   <section id="how">
     <div class="section-head"><div><span class="eyebrow">Simple as planting a seed</span><h2>How this garden works</h2><p>One small smart contract, three clear actions.</p></div></div>
     <div class="how">
@@ -112,7 +129,16 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
       <article class="step"><span>03 / TEND</span><h3>Share a milestone</h3><p>The owner can record a new status, with every change visible on-chain.</p></article>
     </div>
   </section>
-  <section class="contract-band"><div><span class="label-sm" style="color:#bdcaaa">A transparent little garden</span><p>Records live on Sepolia, Ethereum’s public test network. This is a virtual farming demonstration, not a claim about physical land or crop verification.</p></div><a href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener noreferrer">Inspect the smart contract ↗</a></section>
+  <section id="inspiration" class="inspiration" aria-labelledby="inspiration-title">
+    <div class="inspiration-head"><div><span class="eyebrow">A little inspiration for what to grow</span><h2 id="inspiration-title">From the garden notebook</h2><p>Ideas for your next virtual plot, gathered from the wider world of growing.</p></div></div>
+    <div class="inspiration-grid">
+      <article class="inspo-card"><div class="inspo-photo"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=85" alt="Hands caring for a small garden plant" loading="lazy"><span>GROWING NOTES · 01</span></div><div class="inspo-copy"><h3>Start with the soil</h3><p>Healthy gardens begin with patience, good light, and a little care each day.</p></div></article>
+      <article class="inspo-card"><div class="inspo-photo"><img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=85" alt="Fresh green leaves reaching toward natural light" loading="lazy"><span>GROWING NOTES · 02</span></div><div class="inspo-copy"><h3>Make room for greens</h3><p>Leafy crops are a cheerful reminder that small beginnings can fill a whole bed.</p></div></article>
+      <article class="inspo-card"><div class="inspo-photo"><img src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=85" alt="Rows of crops in a cultivated garden" loading="lazy"><span>GROWING NOTES · 03</span></div><div class="inspo-copy"><h3>Grow in good company</h3><p>Shared gardens turn individual plots into a bigger story of learning and care.</p></div></article>
+    </div>
+    <p class="inspo-caption">Illustrative garden photography only. These images are not evidence of physical plots or crops associated with on-chain records.</p>
+  </section>
+  <section class="contract-band"><div><span class="label-sm" style="color:#bdcaaa">A transparent little garden</span><p>Records live on Sepolia, Ethereum’s public test network. This is a virtual farming demonstration, not a claim about physical land or crop verification.</p></div><div class="contract-actions"><button id="copyContract" class="btn" type="button">Copy contract address</button><a href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener noreferrer">Inspect the smart contract ↗</a></div></section>
 </main>
 <footer class="wrap"><span>© Adopt-a-Plot · A community garden prototype</span><span>Built on <a href="https://ethereum.org/en/developers/docs/networks/#sepolia">Ethereum Sepolia</a></span></footer>
 <div id="toast" class="toast" role="status" aria-live="polite"><strong id="toastTitle"></strong><p id="toastText"></p></div>
@@ -136,6 +162,48 @@ function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
 function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
 async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.")}}
+let directoryItems=[];
+const directoryGrid=$("directoryGrid"),directoryStatus=$("directoryStatus"),directoryCount=$("directoryCount");
+function makeDirectoryCard(item){
+  const card=document.createElement("button");card.type="button";card.className="plot-entry";card.setAttribute("aria-label","Open plot "+item.id+": "+item.crop);
+  const top=document.createElement("span");top.className="plot-entry-top";
+  const icon=document.createElement("span");icon.className="plot-entry-icon";icon.setAttribute("aria-hidden","true");icon.textContent="🌿";
+  const id=document.createElement("span");id.className="plot-entry-id";id.textContent="PLOT #"+item.id;top.append(icon,id);
+  const crop=document.createElement("span");crop.className="plot-entry-name";crop.textContent=item.crop||"Unnamed plot";
+  const bottom=document.createElement("span");bottom.className="plot-entry-bottom";
+  const status=document.createElement("span");status.className="plot-status";status.textContent=item.status||"No status";
+  const owner=document.createElement("span");owner.textContent=item.owner.slice(0,6)+"…"+item.owner.slice(-4);owner.title=item.owner;bottom.append(status,owner);
+  card.append(top,crop,bottom);card.addEventListener("click",async()=>{$("plotId").value=item.id;await showPlot(item.id);$("plotResult").scrollIntoView({behavior:"smooth",block:"center"})});
+  return card;
+}
+function renderDirectory(){
+  const query=$("directorySearch").value.trim().toLowerCase(),status=$("directoryFilter").value;
+  const filtered=directoryItems.filter(p=>(!query||[p.crop,p.status,p.owner].some(v=>v.toLowerCase().includes(query)))&&(!status||p.status===status));
+  directoryGrid.replaceChildren();
+  if(!filtered.length){const empty=document.createElement("div");empty.className="directory-empty";empty.textContent=directoryItems.length?"No plots match those filters.":"There are no plots on-chain yet. Be the first to adopt one.";directoryGrid.append(empty);return}
+  filtered.forEach(item=>directoryGrid.append(makeDirectoryCard(item)));
+}
+async function loadDirectory(){
+  directoryStatus.textContent="Reading plot records from Sepolia…";directoryGrid.replaceChildren();
+  try{
+    const reader=new ethers.Contract(ADDRESS,ABI,readProvider),total=Number((await reader.plotCount()).toString()),limit=48;
+    directoryCount.textContent=total+" PLOT"+(total===1?"":"S");
+    if(!total){directoryItems=[];directoryStatus.textContent="The garden is ready for its first plot.";renderDirectory();return}
+    const first=Math.max(1,total-limit+1),ids=Array.from({length:total-first+1},(_,i)=>total-i),items=[];
+    let cursor=0;
+    const workers=Array.from({length:Math.min(5,ids.length)},async()=>{while(cursor<ids.length){const id=ids[cursor++];try{const d=await reader.getPlot(id);items.push({id,crop:String(d[2]||""),status:String(d[3]||""),owner:String(d[1]||"")})}catch(e){console.warn("Skipping unavailable plot",id,e)}}});
+    await Promise.all(workers);directoryItems=items.sort((a,b)=>b.id-a.id);
+    const statuses=[...new Set(directoryItems.map(p=>p.status).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),filter=$("directoryFilter"),previous=filter.value;
+    filter.replaceChildren(new Option("All statuses",""));statuses.forEach(s=>filter.add(new Option(s,s)));if(statuses.includes(previous))filter.value=previous;
+    directoryStatus.textContent="Showing "+directoryItems.length+" of "+total+" on-chain plot"+(total===1?"":"s")+(total>limit?" · newest first":"");
+    renderDirectory();
+  }catch(e){console.warn("Directory load failed",e);directoryCount.textContent="SEPOLIA DIRECTORY";directoryStatus.textContent="Couldn’t reach Sepolia. Connect MetaMask or try refreshing.";directoryGrid.innerHTML='<div class="directory-empty">Live plot records are unavailable right now.</div>'}
+}
+$("directorySearch").addEventListener("input",renderDirectory);
+$("directoryFilter").addEventListener("change",renderDirectory);
+$("directoryRefresh").addEventListener("click",loadDirectory);
+$("copyContract").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(ADDRESS);toast("Address copied","The Sepolia contract address is on your clipboard.")}catch(e){setNotice("Clipboard access is blocked in this browser. You can copy the address from Etherscan.","error")}});
+
 async function connectWallet(){
   if(!window.ethereum){setNotice("MetaMask wasn’t detected. Install the wallet extension, then refresh this page.","error");return}
   connectBtn.disabled=true;
@@ -168,7 +236,7 @@ async function sendTransaction(button,label,action){
     setNotice("Approve the transaction in MetaMask…");const tx=await action();
     setNotice("Transaction submitted. Waiting for Sepolia confirmation…");const receipt=await tx.wait();
     $("txmessage").textContent=label+" confirmed";$("txlink").href="https://sepolia.etherscan.io/tx/"+tx.hash;$("txline").style.display="block";
-    setNotice(label+" confirmed on Sepolia.","success");await loadCount();if(viewedPlotId)await showPlot(viewedPlotId);
+    setNotice(label+" confirmed on Sepolia.","success");await loadCount();await loadDirectory();if(viewedPlotId)await showPlot(viewedPlotId);
   }catch(e){console.error(e);setNotice(e.code===4001?"Transaction cancelled in MetaMask.":(e.reason||e.message||"Transaction failed."),"error")}
   finally{button.disabled=false;button.textContent=previous}
 }
@@ -187,7 +255,7 @@ $("updateBtn").addEventListener("click",async()=>{
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
-  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;await loadCount();
+  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;await loadCount();await loadDirectory();
   const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
   refreshButtons();
@@ -199,9 +267,11 @@ async function refreshWalletState(){
 async function init(){
   if(!window.ethers){setNotice("The wallet library could not load. Check your connection and refresh.","error");return}
   readProvider=new ethers.providers.FallbackProvider([new ethers.providers.JsonRpcProvider("https://rpc.sepolia.org"),new ethers.providers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com")],1);
-  loadCount();
   if(window.ethereum){
     try{await refreshWalletState()}catch(e){console.warn(e)}
+  }else{
+    await loadCount();await loadDirectory()}
+  if(window.ethereum){
     window.ethereum.on("accountsChanged",()=>refreshWalletState());
     window.ethereum.on("chainChanged",()=>window.location.reload());
   }
