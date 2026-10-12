@@ -135,7 +135,7 @@ function toast(title,message){$("toastTitle").textContent=title;$("toastText").t
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
 function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
-async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data services are unavailable right now. You can still connect your wallet to continue.","error")}}
+async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.")}}
 async function connectWallet(){
   if(!window.ethereum){setNotice("MetaMask wasn’t detected. Install the wallet extension, then refresh this page.","error");return}
   connectBtn.disabled=true;
@@ -187,7 +187,7 @@ $("updateBtn").addEventListener("click",async()=>{
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
-  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;
+  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;await loadCount();
   const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
   refreshButtons();
