@@ -44,6 +44,152 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
 @media(max-width:800px){.hero{grid-template-columns:1fr;gap:27px;padding-top:48px}.illustration{height:300px}.nav{display:none}.grid{grid-template-columns:1fr}}
 @media(max-width:520px){.wrap{width:calc(100% - 32px)}.site-head{height:66px;padding:0 16px}.brand{font-size:15px}.site-head>.btn{padding:10px 12px;font-size:11px}.hero{padding:38px 0}.hero-actions{flex-direction:column}.illustration{height:245px}.card{padding:18px}.section-head{align-items:flex-start;gap:8px;flex-direction:column}.how{grid-template-columns:1fr}.contract-band{align-items:flex-start;flex-direction:column}footer{gap:8px;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+
+/* Refined editorial finish */
+:root{
+  --paper:#f7f6ef;
+  --card:#fffefa;
+  --ink:#1d2b20;
+  --muted:#697568;
+  --green:#2d5638;
+  --deep:#183a28;
+  --lime:#d7e89a;
+  --line:#e1e4d7;
+  --shadow:0 20px 56px rgba(31,53,34,.065),0 2px 8px rgba(31,53,34,.035);
+  --ease:cubic-bezier(.2,.75,.25,1)
+}
+body{
+  background:
+    radial-gradient(ellipse at 85% 4%,rgba(218,226,198,.34),transparent 28rem),
+    var(--paper);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6
+}
+.site-head{
+  height:80px;
+  background:rgba(247,246,239,.88);
+  border-bottom-color:rgba(52,75,48,.12);
+  box-shadow:0 4px 24px rgba(31,53,34,.025)
+}
+.brand{font-size:18px;letter-spacing:-.7px}
+.brand-icon{box-shadow:inset 0 0 0 1px rgba(215,232,154,.2)}
+.nav{gap:34px;font-size:12px;letter-spacing:.02em}
+.nav a{position:relative;padding:10px 0;transition:color .2s var(--ease)}
+.nav a:after{
+  content:"";position:absolute;left:0;right:100%;bottom:3px;height:1px;
+  background:#82965f;transition:right .25s var(--ease)
+}
+.nav a:hover:after,.nav a:focus-visible:after{right:0}
+.btn{
+  border-radius:9px;
+  box-shadow:0 4px 12px rgba(24,58,40,.1);
+  transition:transform .24s var(--ease),background .24s var(--ease),box-shadow .24s var(--ease),border-color .24s var(--ease)
+}
+.btn:hover{box-shadow:0 8px 20px rgba(24,58,40,.14);transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible,.nav a:focus-visible,.brand:focus-visible{
+  outline:2px solid #9caf69;outline-offset:4px
+}
+.btn-quiet{box-shadow:none}
+.btn-quiet:hover{box-shadow:0 5px 16px rgba(31,53,34,.06)}
+.hero{gap:64px;padding:78px 0 62px}
+h1{font-size:clamp(48px,5.6vw,76px);line-height:1.01;letter-spacing:-2.8px}
+.lead{font-size:16px;line-height:1.8;max-width:470px}
+.illustration{
+  border:1px solid rgba(46,76,48,.1);
+  border-radius:20px;
+  box-shadow:0 24px 64px rgba(43,64,35,.12),0 3px 10px rgba(43,64,35,.05)
+}
+.ill-label{
+  box-shadow:0 3px 12px rgba(25,48,27,.07);
+  letter-spacing:.65px
+}
+.total-float{border:1px solid rgba(46,76,48,.08);box-shadow:0 10px 28px rgba(25,48,27,.12)}
+#notice{box-shadow:0 3px 12px rgba(31,53,34,.025)}
+.section-head{margin:54px 0 19px}
+.section-head h2,.inspiration-head h2{font-size:32px;letter-spacing:-.8px}
+.section-head p,.inspiration-head p{font-size:13px}
+.grid{gap:18px;align-items:stretch}
+.card{
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  padding:27px;
+  box-shadow:0 12px 36px rgba(31,53,34,.045),0 1px 3px rgba(31,53,34,.035);
+  transition:transform .32s var(--ease),box-shadow .32s var(--ease),border-color .32s var(--ease)
+}
+.card:before{
+  content:"";position:absolute;left:27px;right:27px;top:0;height:2px;
+  background:linear-gradient(90deg,#9eb26a,rgba(158,178,106,0));
+  opacity:.72
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:#d2d9c8;
+  box-shadow:0 22px 48px rgba(31,53,34,.075),0 2px 6px rgba(31,53,34,.04)
+}
+.card-head{margin-bottom:10px}
+.card h3{font-size:22px;letter-spacing:-.25px}
+.card-copy{font-size:13px;line-height:1.72;margin:10px 0 22px}
+.label-sm{letter-spacing:1.25px;color:#788270}
+.field{margin:16px 0}
+.field label{font-size:11px;letter-spacing:.015em}
+.field input,.field select,.field textarea,
+.directory-toolbar input,.directory-toolbar select{
+  border-color:#d9dece;
+  border-radius:9px;
+  padding:13px 14px;
+  background:rgba(255,255,252,.86);
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease)
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+.directory-toolbar input:focus,.directory-toolbar select:focus{
+  border-color:#879b72;
+  background:#fffefa;
+  box-shadow:0 0 0 4px rgba(88,119,70,.11)
+}
+.field input::placeholder,.field textarea::placeholder{color:#a2a797}
+#plotResult,.wallet-card,.result{border:1px solid rgba(63,87,57,.08)}
+.how{gap:16px}
+.step{
+  border:1px solid rgba(63,87,57,.06);
+  background:linear-gradient(145deg,#f0f1e7,#e9ecdf);
+  padding:20px;
+  transition:transform .25s var(--ease),background .25s var(--ease)
+}
+.step:hover{transform:translateY(-2px);background:#eef0e4}
+.contract-band{
+  border:1px solid rgba(215,232,154,.12);
+  box-shadow:0 14px 34px rgba(24,58,40,.11)
+}
+.directory-panel{border-radius:16px}
+.plot-entry{
+  border-radius:12px;
+  box-shadow:0 2px 7px rgba(31,53,34,.025);
+  transition:transform .24s var(--ease),border-color .24s var(--ease),box-shadow .24s var(--ease)
+}
+.plot-entry:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(31,53,34,.075)}
+.inspo-card{border-radius:15px;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.inspo-card:hover{transform:translateY(-3px);box-shadow:0 22px 48px rgba(31,53,34,.09)}
+.inspo-photo{background:#e7eadc}
+.toast{border-radius:14px;box-shadow:0 18px 54px rgba(23,45,29,.17)}
+footer{border-top:1px solid rgba(52,75,48,.1);margin-top:24px}
+@media(max-width:800px){
+  .hero{gap:34px;padding:55px 0 42px}
+  .section-head{margin-top:42px}
+}
+@media(max-width:520px){
+  .site-head{height:68px}
+  .hero{padding:41px 0 34px}
+  h1{font-size:clamp(43px,12vw,58px);letter-spacing:-1.8px}
+  .card{padding:21px}
+  .card:before{left:21px;right:21px}
+  .section-head h2,.inspiration-head h2{font-size:29px}
+}
+@media(prefers-reduced-motion:reduce){
+  .card,.step,.plot-entry,.inspo-card,.btn,.nav a{transition:none!important}
+}
+
 </style>
 </head>
 <body>
