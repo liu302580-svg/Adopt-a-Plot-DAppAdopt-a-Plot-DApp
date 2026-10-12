@@ -303,13 +303,53 @@ footer{border-top:1px solid rgba(52,75,48,.1);margin-top:24px}
   #tools>.card:nth-child(4) .field:nth-of-type(4){display:block;width:100%;margin-right:0}
 }
 
+
+/* Accessible top-right language switcher */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.header-actions{display:flex;align-items:center;gap:10px}
+.language-control{
+  display:flex;align-items:center;gap:8px;height:44px;padding:0 11px;
+  border:1px solid #dfe3d7;border-radius:999px;background:rgba(255,255,250,.82);
+  color:#566253;transition:border-color .2s,background .2s,box-shadow .2s
+}
+.language-control:hover{border-color:#b7c3a9;background:#fffefa}
+.language-control:focus-within{border-color:#82976c;box-shadow:0 0 0 3px rgba(88,119,70,.12)}
+.language-globe{font-size:18px;line-height:1;color:#65715e}
+#languageSelect{
+  appearance:none;border:0;background:transparent;color:#344638;
+  font:600 12px "DM Sans","Noto Sans Thai",system-ui,sans-serif;
+  padding:4px 15px 4px 0;cursor:pointer;outline:none;
+  background-image:linear-gradient(45deg,transparent 50%,#6f7e69 50%),linear-gradient(135deg,#6f7e69 50%,transparent 50%);
+  background-position:calc(100% - 4px) 10px,100% 10px;background-size:4px 4px;background-repeat:no-repeat
+}
+#languageSelect option{background:#fffefa;color:#20291f}
+.site-head .header-actions>.btn{white-space:nowrap}
+@media(max-width:560px){
+  .header-actions{gap:7px}
+  .language-control{height:40px;padding:0 8px;gap:5px}
+  .language-globe{display:none}
+  #languageSelect{font-size:11px;padding-right:13px}
+  .site-head .header-actions>.btn{padding:10px 10px;font-size:10px}
+}
+
 </style>
 </head>
 <body>
 <header class="site-head">
   <a class="brand" href="#"><span class="brand-icon" aria-hidden="true">✳</span> Adopt-a-Plot</a>
   <nav class="nav" aria-label="Main navigation"><a href="#garden">Your garden</a><a href="#tools">Plot tools</a><a href="#how">How it works</a></nav>
-  <button id="connectBtn" class="btn">Connect wallet ↗</button>
+  <div class="header-actions">
+    <div class="language-control">
+      <span class="language-globe" aria-hidden="true">◎</span>
+      <label class="sr-only" for="languageSelect">Language</label>
+      <select id="languageSelect" aria-label="Language">
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+        <option value="th">ไทย</option>
+      </select>
+    </div>
+    <button id="connectBtn" class="btn">Connect wallet ↗</button>
+  </div>
 </header>
 <main class="wrap">
   <section class="hero">
@@ -409,7 +449,7 @@ footer{border-top:1px solid rgba(52,75,48,.1);margin-top:24px}
     </div>
   </section>
   <section id="how">
-    <div class="section-head"><div><span class="eyebrow">Simple as planting a seed</span><h2>How this garden works</h2><p>One small smart contract, three clear actions.</p></div></div>
+    <div class="section-head"><div><span class="eyebrow">Simple as planting a seed</span><h2>How this garden works</h2><p>One small smart contract, five ways to tend the garden.</p></div></div>
     <div class="how">
       <article class="step"><span>01 / ADOPT</span><h3>Name your crop</h3><p>Your wallet creates a new plot record and becomes its owner.</p></article>
       <article class="step"><span>02 / EXPLORE</span><h3>Read the record</h3><p>Plot names, owners, and updates can be looked up by anyone.</p></article>
@@ -632,6 +672,153 @@ async function init(){
   if(sharedValue&&Number.isSafeInteger(sharedId)&&sharedId>0){$("plotId").value=String(sharedId);await showPlot(sharedId)}
 }
 window.addEventListener("DOMContentLoaded",init);
+</script>
+
+<script>
+/* Lightweight interface localization. Contract data and transaction logic remain unchanged. */
+(()=> {
+  const translations={zh:{
+    "Adopt-a-Plot":"认养一块地","Your garden":"我的花园","Plot tools":"地块工具","How it works":"使用说明","Connect wallet ↗":"连接钱包 ↗",
+    "Language":"语言","A COMMUNITY GARDEN ON ETHEREUM SEPOLIA":"以太坊 Sepolia 社区花园","Plant an idea.":"播下一颗种子，",
+    "Watch it grow.":"看它慢慢生长。","Adopt a virtual crop plot, give it a name, and record its growing journey on a shared blockchain ledger. Small beginnings, open records.":"认领一块虚拟作物地，为它命名，并在共享的区块链账本上记录生长历程。从小小的开始，留下公开可查的记录。",
+    "Explore the plot tools ↓":"探索地块工具 ↓","How it works":"使用说明","THE COMMUNITY GARDEN · SEPOLIA":"社区花园 · SEPOLIA",
+    "Anyone can explore records. Connect MetaMask to adopt a plot or update one you own.":"任何人都可以查看记录。连接 MetaMask 即可认领地块或更新自己拥有的地块。",
+    "Wallet connected. You’re on Sepolia and ready to tend your plots.":"钱包已连接。你正在 Sepolia 网络，可以开始打理地块。",
+    "Wallet connected to Sepolia. You’re ready to tend your plots.":"钱包已连接至 Sepolia。可以开始打理地块。",
+    "Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"请将 MetaMask 切换至 Sepolia 以进行更改。地块公开记录仍可查看。",
+    "Connect to Sepolia to make changes. Public plot records remain readable.":"连接至 Sepolia 后即可进行更改。地块公开记录仍可查看。",
+    "A LITTLE PATCH OF THE INTERNET":"互联网中的一小片花园","Your garden, on-chain":"链上的你的花园","Read plot records freely; wallet approval is only needed for changes.":"地块记录可自由查看；只有进行更改时才需要钱包授权。",
+    "ETHEREUM · SEPOLIA":"以太坊 · SEPOLIA","01 · START SOMETHING":"01 · 开始种植","Adopt a plot":"认领地块","Create a new plot record with the name of a crop you’d like to grow.":"创建一条新的地块记录，填写你想种植的作物名称。",
+    "Crop or plot name":"作物或地块名称","e.g. Heirloom tomatoes":"例如：传家宝番茄","Connect wallet to adopt ↗":"连接钱包以认领 ↗","Switch to Sepolia to adopt":"切换至 Sepolia 后认领","Adopt this plot ↗":"认领这块地 ↗",
+    "02 · SEE WHAT’S GROWING":"02 · 查看生长情况","Find a plot":"查找地块","Look up a plot’s on-chain crop name, owner, and latest status. Plot IDs start at 1.":"查询地块链上记录的作物名称、所有者和最新状态。地块编号从 1 开始。",
+    "Plot ID":"地块编号","View plot record":"查看地块记录","Plot":"地块","Crop":"作物","Status":"状态","Owner":"所有者","Copy share link ↗":"复制分享链接 ↗",
+    "03 · KEEP THE STORY GROWING":"03 · 记录生长历程","Update plot status":"更新地块状态","Record a growing milestone on-chain. Only the plot owner can submit an update; the contract checks ownership.":"将生长里程碑记录在链上。只有地块所有者可以提交更新，智能合约会验证所有权。",
+    "New growing status":"新的生长状态","e.g. First leaves appeared":"例如：长出了第一片叶子","Connect wallet to update ↗":"连接钱包以更新 ↗","Switch to Sepolia to update":"切换至 Sepolia 后更新","Save growing update ↗":"保存生长记录 ↗","Tip: look up the plot first to check its ID and owner.":"提示：先查询地块，确认编号和所有者。",
+    "04 · GATHER THE HARVEST":"04 · 收获成果","Record a harvest":"记录收成","Save a yield report as this plot’s current status. Only its owner can update the record.":"将产量报告保存为此地块的当前状态。只有所有者可以更新记录。",
+    "Harvest quantity":"收获数量","Unit":"单位","Kilograms (kg)":"千克（kg）","Pounds (lb)":"磅（lb）","Baskets":"篮","Harvest note · optional":"收获备注 · 选填","e.g. First ripe tomatoes":"例如：第一批成熟的番茄","Connect wallet to report ↗":"连接钱包以提交 ↗","Switch to Sepolia to report":"切换至 Sepolia 后提交","Record harvest report ↗":"记录收成报告 ↗","This replaces the current status, up to 100 characters.":"此操作会替换当前状态，最多 100 个字符。",
+    "05 · PLANT A LITTLE MORE":"05 · 再多种一些","Seed collection":"种子组合","Adopt 2–3 crop plots in one guided flow. Each plot is a separate transaction and needs its own MetaMask approval.":"通过引导流程认领 2–3 块作物地。每块地都是独立交易，需要分别在 MetaMask 中确认。",
+    "Crop names · one per line":"作物名称 · 每行一个","Cherry tomatoes
+Sweet basil":"樱桃番茄
+甜罗勒","Enter two or three names, up to 80 characters each. This is sequential, not one atomic transaction.":"请输入 2 至 3 个名称，每个最多 80 个字符。这些交易会依次提交，并非一次性原子交易。",
+    "Connect wallet to plant ↗":"连接钱包以开始种植 ↗","Switch to Sepolia to plant":"切换至 Sepolia 后种植","Adopt seed collection ↗":"认领这组种子 ↗","Preparing sequential transactions…":"正在准备依次提交交易…",
+    "EVERY RECORD HAS A PLACE":"每条记录都有自己的位置","Browse the garden":"浏览花园","Search the latest on-chain plot records. Select a plot to open its full details.":"搜索最新的链上地块记录。选择一个地块即可查看详细信息。",
+    "SEPOLIA DIRECTORY":"SEPOLIA 地块目录","Search plot records":"搜索地块记录","Filter by growing status":"按生长状态筛选","All statuses":"所有状态","Refresh records ↻":"刷新记录 ↻","My plots ♧":"我的地块 ♧","My plots · On":"我的地块 · 已开启",
+    "Connect wallet to filter your plots":"连接钱包以筛选你的地块","Reading plot records from Sepolia…":"正在从 Sepolia 读取地块记录…","The garden is ready for its first plot.":"花园已准备好迎接第一块地。","Showing ":"正在显示 ",
+    " PLOT":" 块地块"," PLOTS":" 块地块","Couldn’t reach Sepolia. Connect MetaMask or try refreshing.":"无法连接 Sepolia。请连接 MetaMask 或刷新页面。","Live plot records are unavailable right now.":"暂时无法读取实时地块记录。",
+    "Connect to Sepolia or wait for the public network reader to load records.":"连接至 Sepolia，或稍候等待公共网络读取记录。","Plot records will appear here.":"地块记录将在此处显示。","No plots owned by this wallet appear in the latest 48 records.":"最近 48 条记录中没有找到此钱包拥有的地块。","No plots match those filters.":"没有符合筛选条件的地块。","There are no plots on-chain yet. Be the first to adopt one.":"链上还没有地块记录。来认领第一块地吧。",
+    "SIMPLE AS PLANTING A SEED":"像播种一样简单","How this garden works":"花园如何运作","One small smart contract, five ways to tend the garden.":"一个小型智能合约，五种打理花园的方式。","01 / ADOPT":"01 / 认领","Name your crop":"为作物命名","Your wallet creates a new plot record and becomes its owner.":"你的钱包会创建一条新的地块记录，并成为地块所有者。","02 / EXPLORE":"02 / 探索","Read the record":"查看记录","Plot names, owners, and updates can be looked up by anyone.":"任何人都可以查询地块名称、所有者和更新记录。","03 / TEND":"03 / 打理","Share a milestone":"分享生长里程碑","The owner can record a new status, with every change visible on-chain.":"所有者可以记录新的状态，每次更改都会公开保存在链上。",
+    "A LITTLE INSPIRATION FOR WHAT TO GROW":"种植灵感","From the garden notebook":"花园种植手记","Ideas for your next virtual plot, gathered from the wider world of growing.":"从丰富的种植经验中，收集一些虚拟地块的种植灵感。",
+    "GROWING NOTES · 01":"种植笔记 · 01","Start with the soil":"从土壤开始","Healthy gardens begin with patience, good light, and a little care each day.":"健康的花园始于耐心、充足的阳光和每天一点点的照料。",
+    "GROWING NOTES · 02":"种植笔记 · 02","Make room for greens":"为绿叶蔬菜留一席","Leafy crops are a cheerful reminder that small beginnings can fill a whole bed.":"绿叶作物让人欣喜，也提醒我们小小的开始可以铺满整块菜畦。",
+    "GROWING NOTES · 03":"种植笔记 · 03","Grow in good company":"与伙伴一起成长","Shared gardens turn individual plots into a bigger story of learning and care.":"共享花园让每一块小小的地汇成关于学习与照料的共同故事。",
+    "Illustrative garden photography only. These images are not evidence of physical plots or crops associated with on-chain records.":"花园图片仅用于视觉呈现，并不代表链上记录对应的真实地块或作物。",
+    "A TRANSPARENT LITTLE GARDEN":"透明公开的小花园","Records live on Sepolia, Ethereum’s public test network. This is a virtual farming demonstration, not a claim about physical land or crop verification.":"记录保存在以太坊公共测试网络 Sepolia 上。这是一个虚拟农耕演示，不代表真实土地所有权或作物认证。",
+    "Copy contract address":"复制合约地址","Inspect the smart contract ↗":"查看智能合约 ↗","© Adopt-a-Plot · A community garden prototype":"© Adopt-a-Plot · 社区花园原型","Built on ":"构建于 ",
+    "Status update confirmed":"状态更新已确认","Plot adopted confirmed":"地块认领已确认","Harvest report confirmed":"收成报告已确认",
+    "Approve the transaction in MetaMask…":"请在 MetaMask 中确认交易…","Transaction submitted. Waiting for Sepolia confirmation…":"交易已提交，正在等待 Sepolia 确认…",
+    "Transaction confirmed.":"交易已确认。","Approve the adoption in MetaMask.":"请在 MetaMask 中确认认领交易。","Waiting for Sepolia confirmation…":"正在等待 Sepolia 确认…",
+    "Wallet connection was cancelled. You can try again.":"已取消连接钱包。你可以重试。","MetaMask wasn’t detected. Install the wallet extension, then refresh this page.":"未检测到 MetaMask。请安装钱包扩展后刷新页面。",
+    "Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.":"无法读取该地块。编号从 1 开始，请检查编号后重试。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。","Switch MetaMask to Sepolia before updating a plot.":"更新地块前，请将 MetaMask 切换至 Sepolia。","Enter a valid plot ID. Plot IDs start at 1.":"请输入有效的地块编号。编号从 1 开始。","Enter a growing status first.":"请先填写生长状态。","Enter a harvest quantity greater than zero.":"请输入大于零的收获数量。","Choose a valid harvest unit.":"请选择有效的收获单位。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。",
+    "Plot link copied":"地块链接已复制","The Sepolia contract address is on your clipboard.":"Sepolia 合约地址已复制到剪贴板。","Clipboard access is blocked. You can copy the address from Etherscan.":"剪贴板访问受限。你可以从 Etherscan 复制合约地址。",
+    "Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.":"此浏览器暂时无法访问 Sepolia 公共数据服务。请连接 MetaMask 以加载花园记录。"
+  },th:{
+    "Adopt-a-Plot":"รับอุปถัมภ์แปลง","Your garden":"สวนของคุณ","Plot tools":"เครื่องมือแปลง","How it works":"วิธีใช้งาน","Connect wallet ↗":"เชื่อมต่อกระเป๋า ↗",
+    "Language":"ภาษา","A COMMUNITY GARDEN ON ETHEREUM SEPOLIA":"สวนชุมชนบน Ethereum Sepolia","Plant an idea.":"เริ่มปลูกความคิด",
+    "Watch it grow.":"แล้วเฝ้าดูการเติบโต","Adopt a virtual crop plot, give it a name, and record its growing journey on a shared blockchain ledger. Small beginnings, open records.":"รับอุปถัมภ์แปลงปลูกเสมือน ตั้งชื่อพืช และบันทึกการเติบโตลงในบัญชีบล็อกเชนสาธารณะ จุดเริ่มต้นเล็ก ๆ พร้อมข้อมูลที่ตรวจสอบได้",
+    "Explore the plot tools ↓":"ดูเครื่องมือแปลง ↓","THE COMMUNITY GARDEN · SEPOLIA":"สวนชุมชน · SEPOLIA",
+    "Anyone can explore records. Connect MetaMask to adopt a plot or update one you own.":"ทุกคนดูบันทึกได้ เชื่อมต่อ MetaMask เพื่อรับอุปถัมภ์หรืออัปเดตแปลงของคุณ",
+    "Wallet connected. You’re on Sepolia and ready to tend your plots.":"เชื่อมต่อกระเป๋าแล้ว คุณอยู่บน Sepolia และพร้อมดูแลแปลงของคุณ",
+    "Wallet connected to Sepolia. You’re ready to tend your plots.":"เชื่อมต่อกระเป๋ากับ Sepolia แล้ว พร้อมดูแลแปลงของคุณ",
+    "Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"เปลี่ยน MetaMask ไปยัง Sepolia เพื่อแก้ไขข้อมูล บันทึกสาธารณะยังอ่านได้",
+    "Connect to Sepolia to make changes. Public plot records remain readable.":"เชื่อมต่อ Sepolia เพื่อแก้ไขข้อมูล บันทึกสาธารณะยังอ่านได้",
+    "A LITTLE PATCH OF THE INTERNET":"สวนเล็ก ๆ บนอินเทอร์เน็ต","Your garden, on-chain":"สวนของคุณบนบล็อกเชน","Read plot records freely; wallet approval is only needed for changes.":"อ่านบันทึกแปลงได้โดยอิสระ ต้องอนุมัติผ่านกระเป๋าเฉพาะเมื่อแก้ไขข้อมูล",
+    "ETHEREUM · SEPOLIA":"ETHEREUM · SEPOLIA","01 · START SOMETHING":"01 · เริ่มต้นปลูก","Adopt a plot":"รับอุปถัมภ์แปลง","Create a new plot record with the name of a crop you’d like to grow.":"สร้างบันทึกแปลงใหม่ด้วยชื่อพืชที่คุณอยากปลูก",
+    "Crop or plot name":"ชื่อพืชหรือแปลง","e.g. Heirloom tomatoes":"เช่น มะเขือเทศพันธุ์พื้นบ้าน","Connect wallet to adopt ↗":"เชื่อมต่อกระเป๋าเพื่อรับอุปถัมภ์ ↗","Switch to Sepolia to adopt":"เปลี่ยนไป Sepolia เพื่อรับอุปถัมภ์","Adopt this plot ↗":"รับอุปถัมภ์แปลงนี้ ↗",
+    "02 · SEE WHAT’S GROWING":"02 · ดูสิ่งที่กำลังเติบโต","Find a plot":"ค้นหาแปลง","Look up a plot’s on-chain crop name, owner, and latest status. Plot IDs start at 1.":"ค้นหาชื่อพืช เจ้าของ และสถานะล่าสุดบนบล็อกเชน หมายเลขแปลงเริ่มที่ 1",
+    "Plot ID":"หมายเลขแปลง","View plot record":"ดูบันทึกแปลง","Plot":"แปลง","Crop":"พืช","Status":"สถานะ","Owner":"เจ้าของ","Copy share link ↗":"คัดลอกลิงก์แชร์ ↗",
+    "03 · KEEP THE STORY GROWING":"03 · บันทึกการเติบโต","Update plot status":"อัปเดตสถานะแปลง","Record a growing milestone on-chain. Only the plot owner can submit an update; the contract checks ownership.":"บันทึกหมุดหมายการเติบโตบนบล็อกเชน เฉพาะเจ้าของแปลงเท่านั้นที่อัปเดตได้ โดยสัญญาอัจฉริยะจะตรวจสอบสิทธิ์",
+    "New growing status":"สถานะการเติบโตใหม่","e.g. First leaves appeared":"เช่น เริ่มมีใบแรก","Connect wallet to update ↗":"เชื่อมต่อกระเป๋าเพื่ออัปเดต ↗","Switch to Sepolia to update":"เปลี่ยนไป Sepolia เพื่ออัปเดต","Save growing update ↗":"บันทึกการเติบโต ↗","Tip: look up the plot first to check its ID and owner.":"เคล็ดลับ: ค้นหาแปลงก่อนเพื่อตรวจสอบหมายเลขและเจ้าของ",
+    "04 · GATHER THE HARVEST":"04 · เก็บเกี่ยวผลผลิต","Record a harvest":"บันทึกผลผลิต","Save a yield report as this plot’s current status. Only its owner can update the record.":"บันทึกรายงานผลผลิตเป็นสถานะปัจจุบันของแปลง เฉพาะเจ้าของเท่านั้นที่แก้ไขได้",
+    "Harvest quantity":"ปริมาณผลผลิต","Unit":"หน่วย","Kilograms (kg)":"กิโลกรัม (kg)","Pounds (lb)":"ปอนด์ (lb)","Baskets":"ตะกร้า","Harvest note · optional":"หมายเหตุการเก็บเกี่ยว · ไม่บังคับ","e.g. First ripe tomatoes":"เช่น มะเขือเทศสุกชุดแรก","Connect wallet to report ↗":"เชื่อมต่อกระเป๋าเพื่อรายงาน ↗","Switch to Sepolia to report":"เปลี่ยนไป Sepolia เพื่อรายงาน","Record harvest report ↗":"บันทึกรายงานผลผลิต ↗","This replaces the current status, up to 100 characters.":"การดำเนินการนี้จะแทนที่สถานะปัจจุบัน สูงสุด 100 ตัวอักษร",
+    "05 · PLANT A LITTLE MORE":"05 · ปลูกเพิ่มอีกนิด","Seed collection":"ชุดเมล็ดพันธุ์","Adopt 2–3 crop plots in one guided flow. Each plot is a separate transaction and needs its own MetaMask approval.":"รับอุปถัมภ์แปลง 2–3 แปลงผ่านขั้นตอนเดียว แต่ละแปลงเป็นธุรกรรมแยกและต้องยืนยันใน MetaMask ทุกครั้ง",
+    "Crop names · one per line":"ชื่อพืช · บรรทัดละหนึ่งชื่อ","Cherry tomatoes
+Sweet basil":"มะเขือเทศเชอร์รี
+โหระพา","Enter two or three names, up to 80 characters each. This is sequential, not one atomic transaction.":"กรอกชื่อ 2–3 ชื่อ แต่ละชื่อไม่เกิน 80 ตัวอักษร ธุรกรรมจะทำตามลำดับ ไม่ได้ทำพร้อมกันแบบอะตอมิก",
+    "Connect wallet to plant ↗":"เชื่อมต่อกระเป๋าเพื่อปลูก ↗","Switch to Sepolia to plant":"เปลี่ยนไป Sepolia เพื่อปลูก","Adopt seed collection ↗":"รับอุปถัมภ์ชุดเมล็ดพันธุ์ ↗","Preparing sequential transactions…":"กำลังเตรียมธุรกรรมตามลำดับ…",
+    "EVERY RECORD HAS A PLACE":"ทุกบันทึกมีที่อยู่ของตัวเอง","Browse the garden":"สำรวจสวน","Search the latest on-chain plot records. Select a plot to open its full details.":"ค้นหาบันทึกแปลงล่าสุดบนบล็อกเชน เลือกแปลงเพื่อดูรายละเอียดทั้งหมด",
+    "SEPOLIA DIRECTORY":"รายการแปลง SEPOLIA","Search plot records":"ค้นหาบันทึกแปลง","Filter by growing status":"กรองตามสถานะการเติบโต","All statuses":"ทุกสถานะ","Refresh records ↻":"รีเฟรชบันทึก ↻","My plots ♧":"แปลงของฉัน ♧","My plots · On":"แปลงของฉัน · เปิด",
+    "Connect wallet to filter your plots":"เชื่อมต่อกระเป๋าเพื่อกรองแปลงของคุณ","Reading plot records from Sepolia…":"กำลังอ่านบันทึกแปลงจาก Sepolia…","The garden is ready for its first plot.":"สวนพร้อมต้อนรับแปลงแรกแล้ว"," PLOT":" แปลง"," PLOTS":" แปลง","Couldn’t reach Sepolia. Connect MetaMask or try refreshing.":"เชื่อมต่อ Sepolia ไม่ได้ กรุณาเชื่อมต่อ MetaMask หรือลองรีเฟรชหน้า","Live plot records are unavailable right now.":"ขณะนี้ไม่สามารถโหลดบันทึกแปลงแบบเรียลไทม์ได้",
+    "Connect to Sepolia or wait for the public network reader to load records.":"เชื่อมต่อ Sepolia หรือรอให้ระบบอ่านข้อมูลสาธารณะโหลดบันทึก","Plot records will appear here.":"บันทึกแปลงจะแสดงที่นี่","No plots owned by this wallet appear in the latest 48 records.":"ไม่พบแปลงของกระเป๋านี้ใน 48 บันทึกล่าสุด","No plots match those filters.":"ไม่มีแปลงที่ตรงกับตัวกรอง","There are no plots on-chain yet. Be the first to adopt one.":"ยังไม่มีแปลงบนบล็อกเชน มาเป็นคนแรกที่รับอุปถัมภ์เลย",
+    "SIMPLE AS PLANTING A SEED":"ง่ายเหมือนปลูกเมล็ด","How this garden works":"สวนนี้ทำงานอย่างไร","One small smart contract, five ways to tend the garden.":"สัญญาอัจฉริยะขนาดเล็กหนึ่งฉบับ กับห้าวิธีดูแลสวน","01 / ADOPT":"01 / รับอุปถัมภ์","Name your crop":"ตั้งชื่อพืช","Your wallet creates a new plot record and becomes its owner.":"กระเป๋าของคุณสร้างบันทึกแปลงใหม่และเป็นเจ้าของแปลง","02 / EXPLORE":"02 / สำรวจ","Read the record":"อ่านบันทึก","Plot names, owners, and updates can be looked up by anyone.":"ทุกคนค้นหาชื่อแปลง เจ้าของ และการอัปเดตได้","03 / TEND":"03 / ดูแล","Share a milestone":"แชร์หมุดหมาย","The owner can record a new status, with every change visible on-chain.":"เจ้าของบันทึกสถานะใหม่ได้ ทุกการเปลี่ยนแปลงตรวจสอบได้บนบล็อกเชน",
+    "A LITTLE INSPIRATION FOR WHAT TO GROW":"แรงบันดาลใจในการปลูก","From the garden notebook":"บันทึกจากสวน","Ideas for your next virtual plot, gathered from the wider world of growing.":"ไอเดียสำหรับแปลงเสมือนถัดไป จากโลกของการปลูกพืช",
+    "GROWING NOTES · 01":"บันทึกการปลูก · 01","Start with the soil":"เริ่มจากดิน","Healthy gardens begin with patience, good light, and a little care each day.":"สวนที่แข็งแรงเริ่มจากความอดทน แสงที่ดี และการดูแลเล็กน้อยทุกวัน",
+    "GROWING NOTES · 02":"บันทึกการปลูก · 02","Make room for greens":"ปลูกผักใบเขียว","Leafy crops are a cheerful reminder that small beginnings can fill a whole bed.":"ผักใบเขียวเตือนให้เห็นว่าจุดเริ่มต้นเล็ก ๆ เติบโตเต็มแปลงได้",
+    "GROWING NOTES · 03":"บันทึกการปลูก · 03","Grow in good company":"เติบโตไปด้วยกัน","Shared gardens turn individual plots into a bigger story of learning and care.":"สวนที่แบ่งปันกันทำให้แต่ละแปลงกลายเป็นเรื่องราวของการเรียนรู้และการดูแลร่วมกัน",
+    "Illustrative garden photography only. These images are not evidence of physical plots or crops associated with on-chain records.":"ภาพสวนใช้เพื่อประกอบการนำเสนอเท่านั้น ไม่ใช่หลักฐานของแปลงหรือพืชจริงที่เชื่อมโยงกับบันทึกบนบล็อกเชน",
+    "A TRANSPARENT LITTLE GARDEN":"สวนเล็ก ๆ ที่โปร่งใส","Records live on Sepolia, Ethereum’s public test network. This is a virtual farming demonstration, not a claim about physical land or crop verification.":"บันทึกอยู่บน Sepolia ซึ่งเป็นเครือข่ายทดสอบสาธารณะของ Ethereum นี่คือการสาธิตเกษตรเสมือน ไม่ใช่การยืนยันกรรมสิทธิ์ที่ดินหรือการรับรองพืชจริง",
+    "Copy contract address":"คัดลอกที่อยู่สัญญา","Inspect the smart contract ↗":"ดูสัญญาอัจฉริยะ ↗","© Adopt-a-Plot · A community garden prototype":"© Adopt-a-Plot · ต้นแบบสวนชุมชน","Built on ":"สร้างบน ",
+    "Status update confirmed":"ยืนยันการอัปเดตสถานะแล้ว","Plot adopted confirmed":"ยืนยันการรับอุปถัมภ์แปลงแล้ว","Harvest report confirmed":"ยืนยันรายงานผลผลิตแล้ว",
+    "Approve the transaction in MetaMask…":"ยืนยันธุรกรรมใน MetaMask…","Transaction submitted. Waiting for Sepolia confirmation…":"ส่งธุรกรรมแล้ว กำลังรอการยืนยันจาก Sepolia…",
+    "Transaction confirmed.":"ยืนยันธุรกรรมแล้ว","Approve the adoption in MetaMask.":"ยืนยันการรับอุปถัมภ์ใน MetaMask","Waiting for Sepolia confirmation…":"กำลังรอการยืนยันจาก Sepolia…",
+    "Wallet connection was cancelled. You can try again.":"ยกเลิกการเชื่อมต่อกระเป๋าแล้ว ลองใหม่ได้","MetaMask wasn’t detected. Install the wallet extension, then refresh this page.":"ไม่พบ MetaMask กรุณาติดตั้งส่วนขยายกระเป๋าแล้วรีเฟรชหน้า",
+    "Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.":"โหลดแปลงไม่ได้ หมายเลขเริ่มที่ 1 กรุณาตรวจสอบแล้วลองใหม่","Connect the plot owner’s MetaMask wallet first.":"กรุณาเชื่อมต่อกระเป๋า MetaMask ของเจ้าของแปลงก่อน","Switch MetaMask to Sepolia before updating a plot.":"เปลี่ยน MetaMask ไปยัง Sepolia ก่อนอัปเดตแปลง","Enter a valid plot ID. Plot IDs start at 1.":"กรอกหมายเลขแปลงที่ถูกต้อง หมายเลขเริ่มที่ 1","Enter a growing status first.":"กรอกสถานะการเติบโตก่อน","Enter a harvest quantity greater than zero.":"กรอกปริมาณผลผลิตที่มากกว่าศูนย์","Choose a valid harvest unit.":"เลือกหน่วยผลผลิตที่ถูกต้อง",
+    "Plot link copied":"คัดลอกลิงก์แปลงแล้ว","The Sepolia contract address is on your clipboard.":"คัดลอกที่อยู่สัญญา Sepolia แล้ว","Clipboard access is blocked. You can copy the address from Etherscan.":"เข้าถึงคลิปบอร์ดไม่ได้ คุณสามารถคัดลอกที่อยู่จาก Etherscan",
+    "Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.":"บริการข้อมูลสาธารณะของ Sepolia ใช้งานไม่ได้ในเบราว์เซอร์นี้ เชื่อมต่อ MetaMask เพื่อโหลดสวนแบบเรียลไทม์"
+  }};
+  let currentLanguage="en";
+  const textSources=new WeakMap(),attributeSources=new WeakMap();
+  const normalize=value=>String(value||"").replace(/\\s+/g," ").trim();
+  function translated(source){
+    const key=normalize(source);
+    return currentLanguage==="en"?source:(translations[currentLanguage]?.[key]||source);
+  }
+  function updateText(node){
+    if(!textSources.has(node))textSources.set(node,node.nodeValue);
+    const source=textSources.get(node);if(!source||!source.trim())return;
+    const leading=source.match(/^\\s*/)?.[0]||"",trailing=source.match(/\\s*$/)?.[0]||"";
+    const body=source.slice(leading.length,source.length-trailing.length||undefined);
+    const result=translated(body);
+    const next=leading+result+trailing;if(node.nodeValue!==next)node.nodeValue=next;
+  }
+  const translatableAttributes=["placeholder","title","aria-label"];
+  function updateAttributes(element){
+    if(!attributeSources.has(element))attributeSources.set(element,{});
+    const originals=attributeSources.get(element);
+    for(const name of translatableAttributes){
+      if(!element.hasAttribute(name))continue;
+      if(!(name in originals))originals[name]=element.getAttribute(name);
+      const value=translated(originals[name]);
+      if(element.getAttribute(name)!==value)element.setAttribute(name,value);
+    }
+  }
+  function translateTree(root=document.body){
+    if(root.nodeType===Node.TEXT_NODE){updateText(root);return}
+    if(root.nodeType===Node.ELEMENT_NODE){
+      if(root.matches("script,style"))return;
+      updateAttributes(root);
+    }
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let node;while((node=walker.nextNode()))if(!node.parentElement?.closest("script,style"))updateText(node);
+    if(root.querySelectorAll)root.querySelectorAll("*").forEach(updateAttributes);
+  }
+  function setLanguage(language){
+    currentLanguage=translations[language]?language:"en";
+    try{localStorage.setItem("adoptPlotLanguage",currentLanguage)}catch(_){}
+    document.documentElement.lang=currentLanguage==="zh"?"zh-CN":currentLanguage;
+    const selector=document.getElementById("languageSelect");
+    if(selector&&selector.value!==currentLanguage)selector.value=currentLanguage;
+    translateTree();
+  }
+  document.addEventListener("change",event=>{if(event.target?.id==="languageSelect")setLanguage(event.target.value)});
+  const observer=new MutationObserver(records=>records.forEach(record=>{
+    if(record.type==="characterData")updateText(record.target);
+    else record.addedNodes.forEach(node=>translateTree(node));
+    if(record.type==="attributes")updateAttributes(record.target);
+  }));
+  observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:translatableAttributes});
+  const saved=(()=>{try{return localStorage.getItem("adoptPlotLanguage")}catch(_){return null}})();
+  setLanguage(saved||"en");
+})();
 </script>
 </body>
 </html>
