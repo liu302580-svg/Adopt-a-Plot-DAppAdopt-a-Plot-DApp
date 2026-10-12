@@ -146,7 +146,7 @@ async function connectWallet(){
       try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID}]})}
       catch(e){if(e.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA]})}else throw e}
     }
-    provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);currentChainId=(await provider.getNetwork()).chainId;
+    provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);currentChainId=(await provider.getNetwork()).chainId;
     refreshButtons();setNotice("Wallet connected. You’re on Sepolia and ready to tend your plots.","success");await loadCount();
     if(viewedPlotId)await showPlot(viewedPlotId);
   }catch(e){console.error(e);setNotice(e.code===4001?"Wallet connection was cancelled. You can try again.":"Couldn’t connect: "+(e.message||String(e)),"error")}
@@ -187,7 +187,7 @@ $("updateBtn").addEventListener("click",async()=>{
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
-  provider=new ethers.providers.Web3Provider(window.ethereum);
+  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;
   const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
   refreshButtons();
