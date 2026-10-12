@@ -500,6 +500,17 @@ const $=id=>document.getElementById(id);
 const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn"),statusCardBtn=$("statusCardBtn");
 const harvestBtn=$("harvestBtn"),seedBatchBtn=$("seedBatchBtn");
 let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null,mineOnly=false;
+function createPublicReadProvider(){
+  const endpoints=[
+    "https://ethereum-sepolia-rpc.publicnode.com",
+    "https://public.1rpc.io/sepolia",
+    "https://rpc.sepolia.org"
+  ];
+  return new ethers.providers.FallbackProvider(
+    endpoints.map(url=>new ethers.providers.JsonRpcProvider(url)),
+    1
+  );
+}
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
@@ -568,14 +579,24 @@ async function connectWallet(){
   finally{connectBtn.disabled=false}
 }
 async function showPlot(id){
+  const reader=new ethers.Contract(ADDRESS,ABI,readProvider);
   try{
-    const data=await (new ethers.Contract(ADDRESS,ABI,readProvider)).getPlot(id);
+    const total=Number((await reader.plotCount()).toString());
+    if(id>total){
+      viewedPlotId=null;$("plotResult").style.display="none";
+      setNotice("Plot #"+id+" doesn’t exist yet. The garden currently has "+total+" plot"+(total===1?"":"s")+".","error");
+      return;
+    }
+    const data=await reader.getPlot(id);
     viewedPlotId=id;$("resultId").textContent=data[0].toString();$("resultCrop").textContent=data[2]||"—";$("resultStatus").textContent=data[3]||"—";$("resultOwner").textContent=data[1];$("plotResult").style.display="block";
     const isOwner=!!userAddress&&String(data[1]).toLowerCase()===userAddress.toLowerCase();
     $("ownerControls").style.display=isOwner?"block":"none";
     if(isOwner)$("newStatus").value="";
     setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
-  }catch(e){console.warn(e);viewedPlotId=null;$("plotResult").style.display="none";setNotice("Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.","error")}
+  }catch(e){
+    console.warn("Plot lookup failed",e);viewedPlotId=null;$("plotResult").style.display="none";
+    setNotice("Couldn’t reach Sepolia to read plot #"+id+". Check your connection or MetaMask network, then try again.","error");
+  }
 }
 async function sendTransaction(button,label,action){
   button.disabled=true;const previous=button.textContent;
@@ -663,19 +684,21 @@ $("seedBatchBtn").addEventListener("click",async()=>{
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
-  provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;await loadCount();await loadDirectory();
+  provider=new ethers.providers.Web3Provider(window.ethereum);
+  const network=await provider.getNetwork();currentChainId=network.chainId;
+  readProvider=network.chainId===11155111?provider:createPublicReadProvider();
   const accounts=await provider.listAccounts();userAddress=accounts[0]||null;if(!userAddress)mineOnly=false;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
-  refreshButtons();
-  const network=await provider.getNetwork();currentChainId=network.chainId;refreshButtons();
-  syncMyPlotsToggle();renderDirectory();
+  refreshButtons();syncMyPlotsToggle();
+  await loadCount();await loadDirectory();
+  renderDirectory();
   if(network.chainId!==11155111){setNotice(userAddress?"Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"Connect to Sepolia to make changes. Public plot records remain readable.");}
   else if(userAddress)setNotice("Wallet connected to Sepolia. You’re ready to tend your plots.","success");
   if(viewedPlotId)await showPlot(viewedPlotId);
 }
 async function init(){
   if(!window.ethers){setNotice("The wallet library could not load. Check your connection and refresh.","error");return}
-  readProvider=new ethers.providers.FallbackProvider([new ethers.providers.JsonRpcProvider("https://rpc.sepolia.org"),new ethers.providers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com")],1);
+  readProvider=createPublicReadProvider();
   if(window.ethereum){
     try{await refreshWalletState()}catch(e){console.warn(e)}
   }else{
