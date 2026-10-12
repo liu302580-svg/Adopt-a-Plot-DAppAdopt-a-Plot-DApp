@@ -501,15 +501,8 @@ const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBt
 const harvestBtn=$("harvestBtn"),seedBatchBtn=$("seedBatchBtn");
 let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null,mineOnly=false;
 function createPublicReadProvider(){
-  const endpoints=[
-    "https://ethereum-sepolia-rpc.publicnode.com",
-    "https://public.1rpc.io/sepolia",
-    "https://rpc.sepolia.org"
-  ];
-  return new ethers.providers.FallbackProvider(
-    endpoints.map(url=>new ethers.providers.JsonRpcProvider(url)),
-    1
-  );
+  const endpoint="https://ethereum-sepolia-rpc.publicnode.com";
+  return new ethers.providers.JsonRpcProvider(endpoint,{name:"sepolia",chainId:CHAIN_ID});
 }
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
