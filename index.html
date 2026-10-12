@@ -580,6 +580,20 @@ async function connectWallet(){
 }
 async function showPlot(id){
   const reader=new ethers.Contract(ADDRESS,ABI,readProvider);
+  const renderPlot=record=>{
+    const owner=record.owner??record[1],crop=record.crop??record[2],status=record.status??record[3],plotId=record.id??record[0]??id;
+    viewedPlotId=id;$("resultId").textContent=String(plotId);$("resultCrop").textContent=crop||"—";$("resultStatus").textContent=status||"—";$("resultOwner").textContent=owner;$("plotResult").style.display="block";
+    const isOwner=!!userAddress&&String(owner).toLowerCase()===userAddress.toLowerCase();
+    $("ownerControls").style.display=isOwner?"block":"none";
+    if(isOwner)$("newStatus").value="";
+    $("plotResult").scrollIntoView({behavior:"smooth",block:"nearest"});
+  };
+  const cached=directoryItems.find(plot=>plot.id===id);
+  if(cached){
+    renderPlot(cached);
+    setNotice("Plot #"+id+" loaded from the on-chain garden directory.","success");
+    return;
+  }
   try{
     const total=Number((await reader.plotCount()).toString());
     if(id>total){
@@ -587,11 +601,7 @@ async function showPlot(id){
       setNotice("Plot #"+id+" doesn’t exist yet. The garden currently has "+total+" plot"+(total===1?"":"s")+".","error");
       return;
     }
-    const data=await reader.getPlot(id);
-    viewedPlotId=id;$("resultId").textContent=data[0].toString();$("resultCrop").textContent=data[2]||"—";$("resultStatus").textContent=data[3]||"—";$("resultOwner").textContent=data[1];$("plotResult").style.display="block";
-    const isOwner=!!userAddress&&String(data[1]).toLowerCase()===userAddress.toLowerCase();
-    $("ownerControls").style.display=isOwner?"block":"none";
-    if(isOwner)$("newStatus").value="";
+    renderPlot(await reader.getPlot(id));
     setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
   }catch(e){
     console.warn("Plot lookup failed",e);viewedPlotId=null;$("plotResult").style.display="none";
