@@ -1,304 +1,191 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adopt-a-Plot: Organic Farming DApp</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin-bottom: 20px; }
-        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #27ae60; padding-bottom: 10px; }
-        h2 { color: #2980b9; margin-top: 20px; font-size: 18px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        button { background-color: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px; transition: background-color 0.3s; }
-        button:hover { background-color: #2ecc71; }
-        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
-        input[type="text"], input[type="number"] { width: calc(100% - 22px); padding: 10px; margin-top: 10px; margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 5px; }
-        .info-box { background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-top: 15px; border-left: 5px solid #3498db; word-break: break-all; }
-        .status { margin-top: 10px; font-weight: bold; color: #e74c3c; text-align: center; white-space: pre-wrap; word-break: break-word; }
-        .status.ok { color: #27ae60; }
-        label { font-weight: bold; color: #7f8c8d; }
-        /* 状态栏常驻显示，不再藏在隐藏容器里 */
-        #statusBar { background-color: #fffbe6; border: 1px solid #f5d76e; color: #8a6d3b; padding: 10px 14px; border-radius: 6px; font-size: 14px; text-align: center; width: 100%; max-width: 600px; margin-bottom: 20px; box-sizing: border-box; }
-        #statusBar.error { background-color: #fdecea; border-color: #e74c3c; color: #a93226; }
-        #statusBar.success { background-color: #eafaf1; border-color: #27ae60; color: #1e8449; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f5ef">
+  <title>Plot &amp; Parcel — On-chain farm plots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#20271f;--muted:#777e71;--green:#416d43;--green-dark:#284b2e;--lime:#d9ed82;--paper:#f6f5ef;--white:#fffefa;--line:#e4e4d8;--orange:#d98553;--shadow:0 14px 36px #26361d0c}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px "DM Sans",sans-serif}button,input{font:inherit}button{cursor:pointer}
+    .topbar{height:76px;padding:0 max(5vw,24px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#f6f5efe8;position:sticky;top:0;z-index:5;backdrop-filter:blur(16px)}
+    .brand{display:flex;align-items:center;gap:11px;font:800 20px Manrope,sans-serif;letter-spacing:-.8px}.brandmark{width:35px;height:35px;border-radius:12px;background:var(--green);display:grid;place-items:center;color:var(--lime);font-size:20px}
+    .nav{display:flex;align-items:center;gap:30px;color:#666d62;font-size:13px}.nav a{color:inherit;text-decoration:none}.nav a:hover{color:var(--green)}
+    .wallet-btn{border:0;border-radius:9px;background:var(--green);color:white;font-weight:700;padding:12px 17px;transition:.2s}.wallet-btn:hover,.primary:hover{background:var(--green-dark);transform:translateY(-1px)}.wallet-btn:disabled,button:disabled{opacity:.6;cursor:wait}
+    main{max-width:1180px;margin:auto;padding:0 28px 72px}.hero{padding:67px 0 47px;display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:52px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);text-transform:uppercase;letter-spacing:1.6px;font-size:10px;font-weight:800}.dot{height:7px;width:7px;background:#9cb83f;border-radius:100%}
+    h1,h2,h3,p{margin-top:0}h1{font:700 clamp(42px,5vw,68px)/1.03 Manrope,sans-serif;letter-spacing:-3.5px;margin:20px 0}.hero h1 em{font-style:normal;color:var(--green)}
+    .lead{color:#747a6e;line-height:1.75;max-width:490px;font-size:16px}.hero-actions{display:flex;gap:12px;align-items:center;margin-top:27px}.primary,.secondary{padding:13px 18px;border-radius:9px;font-weight:700}.primary{border:0;background:var(--green);color:white;transition:.2s}.secondary{border:1px solid #d6d9ca;color:var(--ink);background:transparent}.secondary:hover{background:#eeeee5}
+    .hero-art{height:330px;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(160deg,#b6c999 0%,#819b6d 44%,#59794e 100%);box-shadow:var(--shadow)}
+    .sun{position:absolute;right:55px;top:37px;width:76px;height:76px;background:#f4d898;border-radius:50%;box-shadow:0 0 0 18px #f4d89825}
+    .hill{position:absolute;border-radius:50% 50% 0 0/28% 28% 0 0;bottom:-120px;width:130%;height:230px;left:-15%;background:#456b48;transform:rotate(-8deg)}
+    .hill.two{bottom:-166px;left:22%;background:#34593c;transform:rotate(9deg)}
+    .rows{position:absolute;inset:140px 25px 0;z-index:1;transform:rotate(-11deg);display:flex;gap:12px;justify-content:center}
+    .row{width:31px;height:220px;border-radius:50%;background:repeating-linear-gradient(0deg,#c8cf8b 0 6px,#748c54 7px 12px);opacity:.86}
+    .art-label{position:absolute;left:22px;top:22px;color:#fff;background:#233d2b73;padding:10px 13px;border:1px solid #ffffff45;border-radius:9px;font-size:11px;z-index:2;backdrop-filter:blur(8px)}
+    .stat-float{position:absolute;right:18px;bottom:18px;z-index:3;background:#fffefa;padding:13px 16px;border-radius:12px;box-shadow:0 8px 22px #182d1d33}.stat-float small{color:var(--muted);display:block;font-size:10px}.stat-float strong{font:700 20px Manrope}
+    #statusBar{display:flex;gap:9px;align-items:center;padding:12px 15px;border:1px solid #dedfce;border-radius:10px;background:#fffdf6;color:#767760;font-size:12px;margin:0 0 24px}
+    #statusBar:before{content:"";width:7px;height:7px;background:#d8a64a;border-radius:50%;flex:none}#statusBar.success{background:#f0f5e8;border-color:#dce6c9;color:#416144}#statusBar.success:before{background:#67a25d}#statusBar.error{background:#fff0eb;border-color:#f0cec0;color:#a8543b}#statusBar.error:before{background:#d36d4b}
+    .dashboard{display:grid;grid-template-columns:1fr 1.45fr;gap:18px}.panel{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:23px;box-shadow:var(--shadow)}
+    .panel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.kicker{font:500 10px "DM Mono",monospace;text-transform:uppercase;letter-spacing:1.1px;color:#929688}.panel h2{font:700 18px Manrope,sans-serif;letter-spacing:-.5px;margin:5px 0 0}.pill{background:#eef1e6;border-radius:30px;padding:6px 9px;font:500 10px "DM Mono";color:var(--green)}
+    .wallet-card{background:#f3f4ed;border-radius:11px;padding:15px;margin-top:9px}.wallet-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #e3e5d9}.wallet-row:last-child{border:0}.wallet-row span:first-child{color:var(--muted);font-size:12px}.wallet-row strong{font:500 11px "DM Mono",monospace;text-align:right;word-break:break-all}
+    .wallet-action{width:100%;margin-top:14px}.chainlink{font-size:11px;color:var(--green);text-decoration:none}
+    .plots-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.plot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .plot-card{border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;min-height:130px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.2s}.plot-card:hover{border-color:#9bae7e;transform:translateY(-2px)}
+    .plot-top{display:flex;justify-content:space-between;align-items:center}.plot-icon{width:30px;height:30px;border-radius:9px;background:#edf2df;display:grid;place-items:center;font-size:16px}.plot-id{font:500 10px "DM Mono";color:#929688}.plot-card strong{font:700 13px Manrope;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.plot-bottom{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px}.tag{background:#f3f3eb;border-radius:20px;padding:4px 7px;color:#687252}.empty{grid-column:1/-1;border:1px dashed #d8dbce;padding:24px;text-align:center;border-radius:10px;color:var(--muted);font-size:12px}
+    .section-title{display:flex;justify-content:space-between;align-items:end;margin:44px 0 16px}.section-title h2{font:700 26px Manrope;letter-spacing:-1px;margin:5px 0}.section-title p{margin:0;color:var(--muted);font-size:12px}
+    .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.tool{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:21px;box-shadow:var(--shadow)}.tool-number{font:500 10px "DM Mono";color:var(--green)}.tool h3{font:700 17px Manrope;margin:9px 0 7px}.tool p{color:var(--muted);font-size:12px;line-height:1.55;min-height:38px}
+    label{font-size:11px;font-weight:700;color:#5b6257;display:block;margin:13px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #dedfd3;border-radius:8px;outline:none;background:#fffefa;color:var(--ink);font-size:13px}input:focus{border-color:#78956c;box-shadow:0 0 0 3px #416d4313}input::placeholder{color:#a4a79b}
+    .tool button{width:100%;margin-top:13px}.readout{display:none;margin-top:14px;border-radius:9px;padding:12px;background:#f2f4eb;font-size:11px;line-height:1.8;overflow-wrap:anywhere}.readout strong{color:#687252}
+    #txBox{display:none;background:#ebf2e4;border:1px solid #d7e2ca;padding:13px 16px;border-radius:10px;margin:0 0 18px;font-size:11px;overflow-wrap:anywhere}#txLink{color:var(--green);text-decoration:none}
+    footer{border-top:1px solid var(--line);padding:22px 5vw;display:flex;justify-content:space-between;color:#858a7e;font-size:11px}footer a{color:var(--green);text-decoration:none}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;gap:28px;padding-top:45px}.hero-art{height:270px}.dashboard{grid-template-columns:1fr}.tools-grid{grid-template-columns:1fr}.plot-grid{grid-template-columns:repeat(2,1fr)}.nav{display:none}}
+    @media(max-width:480px){main{padding:0 17px 50px}.topbar{padding:0 17px;height:66px}.brand{font-size:17px}.hero h1{letter-spacing:-2px}.hero-actions{align-items:stretch;flex-direction:column}.plot-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:17px}.section-title{align-items:flex-start;gap:12px;flex-direction:column}footer{gap:8px;flex-direction:column}}
+  </style>
 </head>
 <body>
-
-<div style="width:100%;max-width:600px;text-align:center;">
-    <h1>🌱 Adopt-a-Plot</h1>
-    <p style="color:#7f8c8d;">Blockchain-based Organic Farming Platform</p>
-</div>
-
-<!-- 常驻可见的状态栏：任何错误都会显示在这里 -->
-<div id="statusBar">未连接。请点击下方按钮连接 MetaMask（请确保钱包已解锁）。</div>
-
-<div class="container">
-    <button id="connectWalletBtn">🔗 Connect MetaMask Wallet</button>
-    <div class="info-box" id="walletInfo" style="display: none;">
-        <p><strong>Status:</strong> Connected ✅</p>
-        <p><strong>Your Address:</strong> <span id="walletAddress"></span></p>
-        <p><strong>Network:</strong> <span id="walletNetwork"></span></p>
-        <p><strong>Total Plots on Chain:</strong> <span id="plotCountSpan">-</span></p>
+<header class="topbar">
+  <a class="brand" href="#" style="color:inherit;text-decoration:none"><span class="brandmark">✳</span> plot &amp; parcel</a>
+  <nav class="nav"><a href="#plots">The plots</a><a href="#tools">Farm tools</a><a href="#about">About</a></nav>
+  <button id="topConnectBtn" class="wallet-btn">Connect wallet ↗</button>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <span class="eyebrow"><i class="dot"></i> A little more connected to the earth</span>
+      <h1>Good things<br>grow <em>together.</em></h1>
+      <p class="lead">Adopt a piece of the garden, follow its progress, and keep a shared record of every plot on the Sepolia blockchain.</p>
+      <div class="hero-actions"><button class="primary" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore the garden <span aria-hidden="true">↓</span></button><button class="secondary" onclick="connectWallet()">Connect your wallet</button></div>
     </div>
-</div>
-
-<!-- 交易结果链接（Etherscan） -->
-<div id="txBox" style="display:none;width:100%;max-width:600px;margin-bottom:20px;text-align:center;">
-    <a id="txLink" href="#" target="_blank" rel="noopener" style="font-size:14px;word-break:break-all;color:#2980b9;"></a>
-</div>
-
-<div class="container" id="appControls" style="display: none;">
-    <h2>1. Adopt a New Plot (Write)</h2>
-    <label for="cropTypeInput">Crop Type:</label>
-    <input type="text" id="cropTypeInput" placeholder="e.g., Organic Tomato">
-    <button id="adoptBtn">🌾 Adopt Plot (Requires Gas)</button>
-
-    <h2>2. Get Plot Details (Read)</h2>
-    <label for="plotIdInput">Plot ID:</label>
-    <input type="number" id="plotIdInput" placeholder="e.g., 1">
-    <button id="getPlotBtn">🔍 Get Details</button>
-    <div class="info-box" id="plotInfo" style="display: none;">
-        <p><strong>Plot ID:</strong> <span id="infoId"></span></p>
-        <p><strong>Status:</strong> <span id="infoStatus"></span></p>
-        <p><strong>Crop Type:</strong> <span id="infoCrop"></span></p>
-        <p><strong>Owner:</strong> <span id="infoOwner"></span></p>
+    <div class="hero-art" aria-label="Illustration of rows in a green garden">
+      <div class="sun"></div><div class="rows"><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i><i class="row"></i></div><div class="hill"></div><div class="hill two"></div>
+      <div class="art-label">A community garden, recorded on-chain</div><div class="stat-float"><small>GARDEN PLOTS</small><strong><span id="heroCount">—</span> <span style="font-size:12px">plots</span></strong></div>
     </div>
-
-    <h2>3. Update Plot Status (Write)</h2>
-    <p style="font-size: 12px; color:#e74c3c;">*Note: Only the plot owner can update the status.</p>
-    <label for="updateIdInput">Plot ID:</label>
-    <input type="number" id="updateIdInput" placeholder="Plot ID">
-    <label for="newStatusInput">New Status:</label>
-    <input type="text" id="newStatusInput" placeholder="e.g., Growing / Harvested">
-    <button id="updateBtn">🔄 Update Status (Requires Gas)</button>
-</div>
-
+  </section>
+  <div id="statusBar" role="status" aria-live="polite">Connect MetaMask to explore and manage garden plots on Sepolia.</div>
+  <div id="txBox"><a id="txLink" href="#" target="_blank" rel="noopener"></a></div>
+  <section class="dashboard">
+    <article class="panel">
+      <div class="panel-head"><div><span class="kicker">Your session</span><h2>Wallet &amp; network</h2></div><span class="pill" id="connectionPill">NOT CONNECTED</span></div>
+      <div class="wallet-card">
+        <div class="wallet-row"><span>Address</span><strong id="walletAddress">Connect to view</strong></div>
+        <div class="wallet-row"><span>Network</span><strong id="walletNetwork">Sepolia testnet</strong></div>
+        <div class="wallet-row"><span>Plots on chain</span><strong id="plotCountSpan">—</strong></div>
+      </div>
+      <button id="connectWalletBtn" class="wallet-btn wallet-action">Connect MetaMask ↗</button>
+      <p style="font-size:10px;color:#909487;margin:11px 0 0">Transactions are approved in your wallet and recorded on Sepolia.</p>
+    </article>
+    <article class="panel" id="plots">
+      <div class="panel-head"><div><span class="kicker">The community garden</span><h2>Plots on the chain</h2></div><span class="pill" id="plotPill">LIVE · SEPOLIA</span></div>
+      <div class="plots-toolbar"><span style="font-size:11px;color:var(--muted)">Select a plot to view its record</span><a class="chainlink" href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener">View contract ↗</a></div>
+      <div class="plot-grid" id="plotGrid"><div class="empty">Connect your wallet to load plots from the blockchain.</div></div>
+    </article>
+  </section>
+  <div class="section-title" id="tools"><div><span class="eyebrow"><i class="dot"></i> From your little corner</span><h2>Garden tools</h2><p>Read and update plot records directly through the smart contract.</p></div><span class="pill">3 ON-CHAIN ACTIONS</span></div>
+  <section class="tools-grid">
+    <article class="tool"><span class="tool-number">01 / ADOPT</span><h3>Start a new plot</h3><p>Give your plot a crop name and create its permanent on-chain record.</p>
+      <label for="cropTypeInput">Crop or plot name</label><input id="cropTypeInput" type="text" maxlength="80" placeholder="e.g. Heirloom tomatoes">
+      <button id="adoptBtn" class="primary">Adopt this plot ↗</button>
+    </article>
+    <article class="tool"><span class="tool-number">02 / EXPLORE</span><h3>Find a plot record</h3><p>Look up the current crop, owner, and growing status for any plot ID.</p>
+      <label for="plotIdInput">Plot ID</label><input id="plotIdInput" type="number" min="1" placeholder="e.g. 1">
+      <button id="getPlotBtn" class="secondary">Look up plot</button>
+      <div class="readout" id="plotInfo"><strong>Plot <span id="infoId"></span></strong><br>Crop: <span id="infoCrop"></span><br>Status: <span id="infoStatus"></span><br>Owner: <span id="infoOwner"></span></div>
+    </article>
+    <article class="tool"><span class="tool-number">03 / TEND</span><h3>Update a growing note</h3><p>Plot owners can record milestones as their crops grow and are harvested.</p>
+      <label for="updateIdInput">Plot ID</label><input id="updateIdInput" type="number" min="1" placeholder="e.g. 1">
+      <label for="newStatusInput">New status</label><input id="newStatusInput" type="text" maxlength="80" placeholder="e.g. Seedlings planted">
+      <button id="updateBtn" class="primary">Save growing note ↗</button>
+    </article>
+  </section>
+  <section id="about" style="margin-top:38px;background:#e9ecdf;border-radius:14px;padding:21px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <div><span class="kicker">Why blockchain?</span><p style="margin:7px 0 0;color:#626b5e;font-size:12px;line-height:1.65;max-width:750px">Plot ownership and growing updates are written to a public, shared ledger. Anyone can verify the record; only the plot owner can update its status. This prototype uses Sepolia test ETH, so transactions are for demonstration only.</p></div>
+    <a class="chainlink" style="white-space:nowrap" href="https://sepolia.etherscan.io/address/0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f" target="_blank" rel="noopener">Contract ↗</a>
+  </section>
+</main>
+<footer><span>© Plot &amp; Parcel · A community garden experiment</span><span>Built on <a href="https://ethereum.org/en/developers/docs/networks/#sepolia" target="_blank" rel="noopener">Ethereum Sepolia</a></span></footer>
 <script>
-    // ============ 配置 ============
-    const contractAddress = "0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f";
-    const contractABI = [
-        "function adoptPlot(string memory _cropType) public",
-        "function updatePlotStatus(uint _id, string memory _newStatus) public",
-        "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)",
-        "function plotCount() public view returns (uint256)"
-    ];
-    const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111
-    const SEPOLIA_PARAMS = {
-        chainId: SEPOLIA_CHAIN_ID,
-        chainName: "Sepolia",
-        nativeCurrency: { name: "SepoliaETH", symbol: "SepoliaETH", decimals: 18 },
-        rpcUrls: ["https://rpc.sepolia.org", "https://ethereum-sepolia-rpc.publicnode.com"],
-        blockExplorerUrls: ["https://sepolia.etherscan.io"]
-    };
-
-    // ============ ethers 多 CDN 加载（任一失败自动换下一个） ============
-    const ETHER_CDNS = [
-        "https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js",
-        "https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js",
-        "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"
-    ];
-    function loadScript(src) {
-        return new Promise(function (resolve, reject) {
-            var s = document.createElement("script");
-            s.src = src;
-            s.onload = function () { s.remove(); resolve(); };
-            s.onerror = function () { s.remove(); reject(new Error("load failed: " + src)); };
-            document.head.appendChild(s);
-        });
+  const contractAddress = "0xc90Fd53ec8F7B729b75c2E969A63f1181990b11f";
+  const contractABI = [
+    "function adoptPlot(string memory _cropType) public",
+    "function updatePlotStatus(uint _id, string memory _newStatus) public",
+    "function getPlot(uint _id) public view returns (uint, address, string memory, string memory)",
+    "function plotCount() public view returns (uint256)"
+  ];
+  const SEPOLIA_CHAIN_ID = "0xaa36a7";
+  const SEPOLIA_PARAMS = {chainId:SEPOLIA_CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
+  const ETHER_CDNS = ["https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js","https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js","https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"];
+  function loadScript(src){return new Promise((resolve,reject)=>{const s=document.createElement("script");s.src=src;s.onload=()=>{s.remove();resolve()};s.onerror=()=>{s.remove();reject(Error("load failed"))};document.head.appendChild(s)})}
+  async function ensureEthers(){if(window.ethers)return true;for(const src of ETHER_CDNS){try{await loadScript(src);if(window.ethers)return true}catch(e){}}setStatus("Could not load the ethers library. Check your connection and refresh.");return false}
+  let provider,signer,contract;
+  const $=id=>document.getElementById(id);
+  function setStatus(message,kind="info"){$("statusBar").textContent=message;$("statusBar").className=kind==="success"?"success":kind==="error"?"error":""}
+  function shortAddress(value){return value?value.slice(0,6)+"…"+value.slice(-4):"—"}
+  function showTxLink(hash){$("txLink").href="https://sepolia.etherscan.io/tx/"+hash;$("txLink").textContent="Transaction confirmed · View on Sepolia Etherscan ↗";$("txBox").style.display="block"}
+  function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  async function renderPlots(total){
+    $("plotGrid").innerHTML="";
+    if(total===0){$("plotGrid").innerHTML='<div class="empty">No plots yet. Be the first to adopt one.</div>';return}
+    const count=Math.min(total,30);
+    for(let id=1;id<=count;id++){
+      try{
+        const plot=await contract.getPlot(id), crop=plot[2]||"Untitled plot", status=plot[3]||"Growing";
+        const card=document.createElement("button");card.type="button";card.className="plot-card";card.setAttribute("aria-label","View plot "+id);
+        card.innerHTML='<span class="plot-top"><span class="plot-icon">🌱</span><span class="plot-id">PLOT #'+id+'</span></span><strong title="'+escapeHTML(crop)+'">'+escapeHTML(crop)+'</strong><span class="plot-bottom"><span class="tag">'+escapeHTML(status)+'</span><span>↗</span></span>';
+        card.addEventListener("click",()=>loadPlot(id));$("plotGrid").appendChild(card);
+      }catch(e){}
     }
-    (async function ensureEthers() {
-        if (window.ethers) return;
-        for (var i = 0; i < ETHER_CDNS.length; i++) {
-            try { await loadScript(ETHER_CDNS[i]); if (window.ethers) return; } catch (e) {}
-        }
-        setStatus("ethers 库加载失败：请检查网络或刷新后重试。", "error");
-    })();
-
-    // ============ DOM 与状态 ============
-    let provider, signer, contract;
-
-    const statusBar = document.getElementById("statusBar");
-    const connectWalletBtn = document.getElementById("connectWalletBtn");
-    const walletInfo = document.getElementById("walletInfo");
-    const walletAddressSpan = document.getElementById("walletAddress");
-    const walletNetworkSpan = document.getElementById("walletNetwork");
-    const plotCountSpan = document.getElementById("plotCountSpan");
-    const appControls = document.getElementById("appControls");
-    const txBox = document.getElementById("txBox");
-    const txLink = document.getElementById("txLink");
-
-    function setStatus(msg, kind) {
-        statusBar.innerText = msg;
-        statusBar.className = "success";
-        if (kind === "error") statusBar.className = "error";
-        if (kind === "info") statusBar.className = "";
-    }
-
-    function showTxLink(hash) {
-        txLink.href = "https://sepolia.etherscan.io/tx/" + hash;
-        txLink.innerText = "✅ View transaction on Sepolia Etherscan: " + hash;
-        txBox.style.display = "block";
-    }
-
-    async function refreshPlotCount() {
-        if (!contract) return;
-        try {
-            const n = await contract.plotCount();
-            plotCountSpan.innerText = n.toString();
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    // ============ 连接主逻辑 ============
-    async function connectWallet() {
-        if (typeof window.ethereum === "undefined") {
-            setStatus("未检测到 MetaMask：请先安装 MetaMask 浏览器插件，然后刷新本页。", "error");
-            return;
-        }
-        connectWalletBtn.disabled = true;
-        setStatus("正在请求 MetaMask 授权，请在钱包弹窗中点击「Connect / 连接」…", "info");
-        try {
-            // 1. 请求账户（这一步会弹出钱包授权窗口）
-            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-            if (!accounts || accounts.length === 0) {
-                setStatus("MetaMask 未返回任何账户：请确认钱包已解锁且已创建账户后重试。", "error");
-                return;
-            }
-
-            // 2. 检查并切换网络到 Sepolia
-            const chainId = await window.ethereum.request({ method: "eth_chainId" });
-            if (chainId !== SEPOLIA_CHAIN_ID) {
-                setStatus("当前网络不是 Sepolia，正在请求切换网络…", "info");
-                try {
-                    await window.ethereum.request({
-                        method: "wallet_switchEthereumChain",
-                        params: [{ chainId: SEPOLIA_CHAIN_ID }]
-                    });
-                } catch (switchErr) {
-                    if (switchErr.code === 4902) { // 钱包里还没有 Sepolia，需要添加
-                        setStatus("钱包中没有 Sepolia 网络，正在添加…", "info");
-                        await window.ethereum.request({
-                            method: "wallet_addEthereumChain",
-                            params: [SEPOLIA_PARAMS]
-                        });
-                    } else {
-                        throw switchErr;
-                    }
-                }
-            }
-
-            // 3. 初始化 provider / signer / contract
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            signer = provider.getSigner();
-            const address = await signer.getAddress();
-            contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-            // 4. 更新界面
-            walletAddressSpan.innerText = address;
-            walletNetworkSpan.innerText = "Sepolia (11155111)";
-            walletInfo.style.display = "block";
-            appControls.style.display = "block";
-            connectWalletBtn.style.display = "none";
-            setStatus("连接成功！当前网络：Sepolia。可以开始使用 DApp 了。", "success");
-            refreshPlotCount();
-        } catch (err) {
-            console.error("Connection failed:", err);
-            let msg = (err && err.message) ? err.message : String(err);
-            if (err && err.code === 4001) {
-                msg = "你在 MetaMask 弹窗中拒绝了连接请求。请再次点击连接并在弹窗中点「Connect」。";
-            }
-            setStatus("连接失败：" + msg + "（详细信息见 F12 控制台）", "error");
-            connectWalletBtn.disabled = false;
-        }
-    }
-
-    connectWalletBtn.addEventListener("click", connectWallet);
-
-    // ============ 1. 领养新地块（写交易） ============
-    document.getElementById('adoptBtn').addEventListener('click', async () => {
-        const cropType = document.getElementById('cropTypeInput').value;
-        if (!cropType) { setStatus("Please enter a crop type!", "error"); return; }
-
-        try {
-            setStatus("Waiting for MetaMask confirmation...", "info");
-            const tx = await contract.adoptPlot(cropType);
-            setStatus("Transaction sent: " + tx.hash + " — waiting for blockchain confirmation...");
-            await tx.wait();
-            showTxLink(tx.hash);
-            setStatus("Plot adopted successfully! Crop: " + cropType, "success");
-            document.getElementById('cropTypeInput').value = "";
-            refreshPlotCount();
-        } catch (error) {
-            console.error(error);
-            setStatus("Transaction failed or rejected: " + ((error && error.message) ? error.message : error), "error");
-        }
-    });
-
-    // ============ 2. 查询地块详情（读） ============
-    document.getElementById('getPlotBtn').addEventListener('click', async () => {
-        const id = document.getElementById('plotIdInput').value;
-        if (!id) { setStatus("Please enter a plot ID!", "error"); return; }
-
-        try {
-            const data = await contract.getPlot(id);
-            document.getElementById('infoId').innerText = data[0].toString();
-            document.getElementById('infoOwner').innerText = data[1];
-            document.getElementById('infoCrop').innerText = data[2];
-            document.getElementById('infoStatus').innerText = data[3];
-            document.getElementById('plotInfo').style.display = 'block';
-            setStatus("Plot #" + id + " loaded from the blockchain.", "success");
-        } catch (error) {
-            console.error(error);
-            setStatus("Plot not found. Check the ID.", "error");
-        }
-    });
-
-    // ============ 3. 更新地块状态（写交易，仅地主） ============
-    document.getElementById('updateBtn').addEventListener('click', async () => {
-        const id = document.getElementById('updateIdInput').value;
-        const newStatus = document.getElementById('newStatusInput').value;
-        if (!id || !newStatus) { setStatus("Please fill in all fields!", "error"); return; }
-
-        try {
-            setStatus("Waiting for MetaMask confirmation...", "info");
-            const tx = await contract.updatePlotStatus(id, newStatus);
-            setStatus("Transaction sent: " + tx.hash + " — waiting for blockchain confirmation...");
-            await tx.wait();
-            showTxLink(tx.hash);
-            setStatus("Status updated successfully for plot #" + id + " → " + newStatus, "success");
-            document.getElementById('newStatusInput').value = "";
-        } catch (error) {
-            console.error(error);
-            setStatus("Update failed. Are you the owner of this plot? " + ((error && error.message) ? error.message : error), "error");
-        }
-    });
-
-    // ============ 监听钱包状态变化 ============
-    if (window.ethereum && window.ethereum.on) {
-        window.ethereum.on("accountsChanged", function (accounts) {
-            if (!accounts || accounts.length === 0) {
-                // 账户被移除 = 断开
-                setStatus("MetaMask 账户已断开，请重新连接。", "error");
-                connectWalletBtn.style.display = "";
-                walletInfo.style.display = "none";
-                appControls.style.display = "none";
-            } else if (provider) {
-                walletAddressSpan.innerText = accounts[0];
-            }
-        });
-        window.ethereum.on("chainChanged", function (chainId) {
-            if (provider && chainId !== SEPOLIA_CHAIN_ID) {
-                setStatus("注意：钱包已切换到其他网络，请切回 Sepolia 后再操作。", "error");
-                walletNetworkSpan.innerText = "非 Sepolia 网络 (chainId=" + chainId + ")";
-            } else if (provider) {
-                walletNetworkSpan.innerText = "Sepolia (11155111)";
-                setStatus("已切回 Sepolia 网络。", "success");
-            }
-        });
-    }
+    if(!$("plotGrid").children.length)$("plotGrid").innerHTML='<div class="empty">Plots could not be loaded. Check the Sepolia RPC and try again.</div>';
+    if(total>count){const more=document.createElement("div");more.className="empty";more.textContent="Showing the first "+count+" of "+total+" plots."; $("plotGrid").appendChild(more)}
+  }
+  async function refreshPlotCount(){if(!contract)return;try{const total=(await contract.plotCount()).toNumber();$("plotCountSpan").textContent=total;$("heroCount").textContent=total;await renderPlots(total)}catch(e){console.error(e);$("plotGrid").innerHTML='<div class="empty">Unable to read plots from Sepolia right now.</div>'}}
+  async function connectWallet(){
+    if(!window.ethereum){setStatus("MetaMask was not detected. Install or open the extension, then try again.","error");return}
+    ["connectWalletBtn","topConnectBtn"].forEach(id=>$(id).disabled=true);
+    try{
+      if(!await ensureEthers())return;
+      setStatus("Approve the connection request in MetaMask…");
+      await window.ethereum.request({method:"eth_requestAccounts"});
+      let chainId=await window.ethereum.request({method:"eth_chainId"});
+      if(chainId!==SEPOLIA_CHAIN_ID){
+        try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:SEPOLIA_CHAIN_ID}]})}
+        catch(err){if(err.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA_PARAMS]})}else throw err}
+      }
+      provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();
+      const address=await signer.getAddress();contract=new ethers.Contract(contractAddress,contractABI,signer);
+      $("walletAddress").textContent=shortAddress(address);$("walletAddress").title=address;$("walletNetwork").textContent="Sepolia · 11155111";
+      $("connectionPill").textContent="CONNECTED";$("connectionPill").style.background="#e7f2df";
+      $("connectWalletBtn").textContent="Wallet connected ✓";$("topConnectBtn").textContent=shortAddress(address);
+      setStatus("Wallet connected to Sepolia. Garden records are live.","success");await refreshPlotCount();
+    }catch(err){console.error(err);setStatus(err.code===4001?"Connection was cancelled in MetaMask. You can try again.":"Could not connect: "+(err.message||String(err)),"error")}
+    finally{["connectWalletBtn","topConnectBtn"].forEach(id=>$(id).disabled=false)}
+  }
+  $("connectWalletBtn").addEventListener("click",connectWallet);$("topConnectBtn").addEventListener("click",connectWallet);
+  async function loadPlot(id){
+    if(!contract){setStatus("Connect MetaMask first to read plot records.","error");return}
+    try{const data=await contract.getPlot(id);$("infoId").textContent=data[0].toString();$("infoOwner").textContent=data[1];$("infoCrop").textContent=data[2];$("infoStatus").textContent=data[3];$("plotInfo").style.display="block";$("plotIdInput").value=id;setStatus("Plot #"+id+" loaded from Sepolia.","success")}
+    catch(e){$("plotInfo").style.display="none";setStatus("Could not find plot #"+id+". Check the ID and try again.","error")}
+  }
+  $("getPlotBtn").addEventListener("click",async()=>{const id=$("plotIdInput").value;if(!id||Number(id)<1){setStatus("Enter a valid plot ID.","error");return}await loadPlot(id)});
+  $("adoptBtn").addEventListener("click",async()=>{
+    if(!contract){setStatus("Connect MetaMask first to adopt a plot.","error");return}
+    const crop=$("cropTypeInput").value.trim();if(!crop){setStatus("Enter a crop or plot name first.","error");return}
+    try{$("adoptBtn").disabled=true;setStatus("Confirm the adoption transaction in MetaMask…");const tx=await contract.adoptPlot(crop);setStatus("Transaction submitted. Waiting for Sepolia confirmation…");await tx.wait();showTxLink(tx.hash);setStatus("Your plot has been adopted: "+crop,"success");$("cropTypeInput").value="";await refreshPlotCount()}
+    catch(e){console.error(e);setStatus(e.code===4001?"Transaction cancelled in MetaMask.":"Adoption failed: "+(e.reason||e.message||String(e)),"error")}finally{$("adoptBtn").disabled=false}
+  });
+  $("updateBtn").addEventListener("click",async()=>{
+    if(!contract){setStatus("Connect MetaMask first to update a plot.","error");return}
+    const id=$("updateIdInput").value,status=$("newStatusInput").value.trim();if(!id||Number(id)<1||!status){setStatus("Enter a valid plot ID and a new growing status.","error");return}
+    try{$("updateBtn").disabled=true;setStatus("Confirm the status update in MetaMask…");const tx=await contract.updatePlotStatus(id,status);setStatus("Transaction submitted. Waiting for Sepolia confirmation…");await tx.wait();showTxLink(tx.hash);setStatus("Plot #"+id+" updated to “"+status+"”.","success");$("newStatusInput").value="";await refreshPlotCount()}
+    catch(e){console.error(e);setStatus(e.code===4001?"Transaction cancelled in MetaMask.":"Update failed. Only the plot owner can change this record. "+(e.reason||""),"error")}finally{$("updateBtn").disabled=false}
+  });
+  if(window.ethereum&&window.ethereum.on){
+    window.ethereum.on("accountsChanged",accounts=>{if(!accounts.length){contract=signer=provider=null;$("walletAddress").textContent="Connect to view";$("connectionPill").textContent="NOT CONNECTED";$("connectWalletBtn").textContent="Connect MetaMask ↗";$("topConnectBtn").textContent="Connect wallet ↗";$("plotGrid").innerHTML='<div class="empty">Connect your wallet to load plots from the blockchain.</div>';setStatus("Wallet disconnected. Connect MetaMask to continue.","error")}else if(provider){$("walletAddress").textContent=shortAddress(accounts[0]);$("walletAddress").title=accounts[0]}});
+    window.ethereum.on("chainChanged",chainId=>{if(chainId!==SEPOLIA_CHAIN_ID){contract=null;$("walletNetwork").textContent="Wrong network";setStatus("Switch MetaMask back to Sepolia to use the garden.","error")}else if(provider){provider=new ethers.providers.Web3Provider(window.ethereum);signer=provider.getSigner();contract=new ethers.Contract(contractAddress,contractABI,signer);$("walletNetwork").textContent="Sepolia · 11155111";setStatus("Connected to Sepolia.","success");refreshPlotCount()}});
+  }
 </script>
-
 </body>
 </html>
