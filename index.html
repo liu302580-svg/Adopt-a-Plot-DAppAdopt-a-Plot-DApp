@@ -597,6 +597,7 @@ async function showPlot(id){
   const readers=[];
   if(provider&&currentChainId===11155111)readers.push(new ethers.Contract(ADDRESS,ABI,provider));
   if(readProvider&&readProvider!==provider)readers.push(new ethers.Contract(ADDRESS,ABI,readProvider));
+  if(provider&&currentChainId===11155111)readers.push(new ethers.Contract(ADDRESS,ABI,createPublicReadProvider()));
   if(!readers.length)readers.push(new ethers.Contract(ADDRESS,ABI,createPublicReadProvider()));
   let lastError=null,confirmedMissing=false;
   for(const reader of readers){
