@@ -502,7 +502,7 @@ const harvestBtn=$("harvestBtn"),seedBatchBtn=$("seedBatchBtn");
 let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null,mineOnly=false;
 function createPublicReadProvider(){
   const endpoint="https://ethereum-sepolia-rpc.publicnode.com";
-  return new ethers.providers.JsonRpcProvider(endpoint,{name:"sepolia",chainId:CHAIN_ID});
+  return new ethers.providers.StaticJsonRpcProvider(endpoint,{name:"sepolia",chainId:CHAIN_ID});
 }
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
