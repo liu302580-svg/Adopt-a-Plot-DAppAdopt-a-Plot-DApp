@@ -36,7 +36,7 @@ h1,h2,h3,p{margin-top:0}h1{font:600 clamp(44px,5.2vw,70px)/1.03 "Playfair Displa
 .contract-band{margin-top:34px;border-radius:13px;background:var(--deep);color:#f5f4ec;padding:20px 23px;display:flex;justify-content:space-between;align-items:center;gap:16px}.contract-band p{margin:5px 0 0;font-size:11px;color:#c2cbbd;overflow-wrap:anywhere}.contract-band a{color:var(--lime);font-size:11px;white-space:nowrap}
 footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858b7d;font-size:10px}footer a{color:var(--green)}
 .toast{position:fixed;right:22px;bottom:20px;z-index:9;width:min(370px,calc(100vw - 32px));border:1px solid var(--line);border-radius:11px;background:var(--card);box-shadow:0 14px 45px #172d1d24;padding:15px 17px;display:none}.toast.show{display:block}.toast strong{font:600 16px "Playfair Display"}.toast p{font-size:11px;color:var(--muted);margin:4px 0}.toast a{font-size:11px;color:var(--green)}
-.directory-panel{padding:24px}.directory-toolbar{display:grid;grid-template-columns:1fr 190px auto;gap:9px;margin:18px 0 12px}.directory-toolbar input,.directory-toolbar select{min-width:0;border:1px solid #d9ddcf;border-radius:7px;padding:11px 12px;background:#fffefa;color:var(--ink);font:12px "DM Sans",sans-serif}.directory-toolbar input:focus,.directory-toolbar select:focus{outline:2px solid #9fb58c;outline-offset:1px}.directory-status{font-size:11px;color:var(--muted);margin:0 0 12px}.directory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.plot-entry{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:152px;border:1px solid var(--line);border-radius:10px;background:#fffefa;padding:14px;transition:transform .18s,border-color .18s,box-shadow .18s}.plot-entry:hover{transform:translateY(-2px);border-color:#a9b899;box-shadow:0 8px 22px #20351b10}.plot-entry-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.plot-entry-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#e9efd9;font-size:17px}.plot-entry-id{font:500 10px "DM Mono";color:#858c7d}.plot-entry-name{font:600 16px "Playfair Display";overflow-wrap:anywhere;color:var(--deep)}.plot-entry-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;color:var(--muted);font-size:10px}.plot-status{border-radius:30px;background:#eef1e5;color:var(--green);padding:4px 8px;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.directory-empty{grid-column:1/-1;border:1px dashed #d8ddcf;border-radius:9px;padding:24px;text-align:center;color:var(--muted);font-size:12px}
+.directory-panel{padding:24px}.directory-toolbar{display:grid;grid-template-columns:minmax(180px,1fr) 170px auto auto;gap:9px;margin:18px 0 12px}.directory-toolbar .my-plots.active{background:var(--green);border-color:var(--green);color:#fff}.directory-toolbar .my-plots:disabled{opacity:.55;cursor:not-allowed}.directory-toolbar input,.directory-toolbar select{min-width:0;border:1px solid #d9ddcf;border-radius:7px;padding:11px 12px;background:#fffefa;color:var(--ink);font:12px "DM Sans",sans-serif}.directory-toolbar input:focus,.directory-toolbar select:focus{outline:2px solid #9fb58c;outline-offset:1px}.directory-status{font-size:11px;color:var(--muted);margin:0 0 12px}.directory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.plot-entry{display:flex;flex-direction:column;align-items:stretch;text-align:left;min-height:152px;border:1px solid var(--line);border-radius:10px;background:#fffefa;padding:14px;transition:transform .18s,border-color .18s,box-shadow .18s}.plot-entry:hover{transform:translateY(-2px);border-color:#a9b899;box-shadow:0 8px 22px #20351b10}.plot-entry-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}.plot-entry-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#e9efd9;font-size:17px}.plot-entry-id{font:500 10px "DM Mono";color:#858c7d}.plot-entry-name{font:600 16px "Playfair Display";overflow-wrap:anywhere;color:var(--deep)}.plot-entry-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding-top:12px;color:var(--muted);font-size:10px}.plot-status{border-radius:30px;background:#eef1e5;color:var(--green);padding:4px 8px;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.directory-empty{grid-column:1/-1;border:1px dashed #d8ddcf;border-radius:9px;padding:24px;text-align:center;color:var(--muted);font-size:12px}
 .inspiration{margin-top:45px}.inspiration-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px}.inspiration-head h2{font:600 29px "Playfair Display";margin:7px 0 4px}.inspiration-head p{color:var(--muted);font-size:12px;margin:0}.inspiration-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.inspo-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}.inspo-photo{height:205px;position:relative;background:#e1e6d5;overflow:hidden}.inspo-photo img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .4s}.inspo-card:hover .inspo-photo img{transform:scale(1.035)}.inspo-photo span{position:absolute;left:12px;top:12px;border-radius:40px;background:#fffefaed;color:#42543f;padding:6px 9px;font:500 9px "DM Mono";letter-spacing:.7px}.inspo-copy{padding:14px 16px 16px}.inspo-copy h3{font:600 17px "Playfair Display";margin:0 0 5px}.inspo-copy p{color:var(--muted);font-size:11px;line-height:1.55;margin:0}.inspo-caption{font-size:10px;color:#858c7d;margin:10px 0 0}
 .contract-actions{display:flex;align-items:center;gap:17px}.contract-actions .btn{border:1px solid #72846e;background:transparent;color:#f5f4ec;padding:10px 13px}.contract-actions .btn:hover{background:#2a5034}
 @media(max-width:800px){.directory-grid{grid-template-columns:repeat(2,1fr)}.inspiration-grid{grid-template-columns:1fr 1fr}.inspo-card:last-child{display:none}}
@@ -104,6 +104,7 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
           <div class="result-row"><span>Crop</span><span id="resultCrop"></span></div>
           <div class="result-row"><span>Status</span><span id="resultStatus"></span></div>
           <div class="result-row"><span>Owner</span><span id="resultOwner"></span></div>
+          <button id="sharePlotLink" class="btn btn-quiet wide" type="button" style="margin-top:12px">Copy share link ↗</button>
           <div id="ownerControls" class="owner-note">You own this plot. Use the third card to record a growing update.</div>
         </div>
       </article>
@@ -124,6 +125,7 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
         <input id="directorySearch" type="search" placeholder="Search crops, status, or owner…" aria-label="Search plot records">
         <select id="directoryFilter" aria-label="Filter by growing status"><option value="">All statuses</option></select>
         <button id="directoryRefresh" class="btn btn-quiet" type="button">Refresh records ↻</button>
+        <button id="myPlotsToggle" class="btn btn-quiet my-plots" type="button" aria-pressed="false" disabled title="Connect wallet to filter your plots">My plots ♧</button>
       </div>
       <p id="directoryStatus" class="directory-status" role="status" aria-live="polite">Connect to Sepolia or wait for the public network reader to load records.</p>
       <div id="directoryGrid" class="directory-grid"><div class="directory-empty">Plot records will appear here.</div></div>
@@ -163,10 +165,11 @@ const ABI=[
 const SEPOLIA={chainId:CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
 const $=id=>document.getElementById(id);
 const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn"),statusCardBtn=$("statusCardBtn");
-let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null;
+let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null,mineOnly=false;
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
+function syncMyPlotsToggle(){const b=$("myPlotsToggle");b.disabled=!userAddress;b.title=userAddress?"Show only plots owned by this wallet":"Connect wallet to filter your plots";b.classList.toggle("active",mineOnly);b.setAttribute("aria-pressed",String(mineOnly));b.textContent=mineOnly?"My plots · On":"My plots ♧"}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
 function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";statusCardBtn.disabled=!userAddress||!onSepolia;statusCardBtn.textContent=!userAddress?"Connect wallet to update ↗":!onSepolia?"Switch to Sepolia to update":"Save growing update ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
 async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.")}}
@@ -186,9 +189,9 @@ function makeDirectoryCard(item){
 }
 function renderDirectory(){
   const query=$("directorySearch").value.trim().toLowerCase(),status=$("directoryFilter").value;
-  const filtered=directoryItems.filter(p=>(!query||[p.crop,p.status,p.owner].some(v=>v.toLowerCase().includes(query)))&&(!status||p.status===status));
+  const filtered=directoryItems.filter(p=>(!query||[p.crop,p.status,p.owner].some(v=>v.toLowerCase().includes(query)))&&(!status||p.status===status)&&(!mineOnly||(userAddress&&p.owner.toLowerCase()===userAddress.toLowerCase())));
   directoryGrid.replaceChildren();
-  if(!filtered.length){const empty=document.createElement("div");empty.className="directory-empty";empty.textContent=directoryItems.length?"No plots match those filters.":"There are no plots on-chain yet. Be the first to adopt one.";directoryGrid.append(empty);return}
+  if(!filtered.length){const empty=document.createElement("div");empty.className="directory-empty";empty.textContent=mineOnly?"No plots owned by this wallet appear in the latest 48 records.":directoryItems.length?"No plots match those filters.":"There are no plots on-chain yet. Be the first to adopt one.";directoryGrid.append(empty);return}
   filtered.forEach(item=>directoryGrid.append(makeDirectoryCard(item)));
 }
 async function loadDirectory(){
@@ -210,6 +213,8 @@ async function loadDirectory(){
 $("directorySearch").addEventListener("input",renderDirectory);
 $("directoryFilter").addEventListener("change",renderDirectory);
 $("directoryRefresh").addEventListener("click",loadDirectory);
+$("myPlotsToggle").addEventListener("click",()=>{if(!userAddress){setNotice("Connect your wallet to filter for your plots.");return}mineOnly=!mineOnly;syncMyPlotsToggle();renderDirectory()});
+$("sharePlotLink").addEventListener("click",async()=>{if(!viewedPlotId)return;const url=new URL(window.location.pathname,window.location.origin);url.searchParams.set("plot",String(viewedPlotId));url.hash="tools";try{await navigator.clipboard.writeText(url.toString());toast("Plot link copied","Share this direct link to plot #"+viewedPlotId+".")}catch(e){setNotice("Clipboard access is blocked. You can copy this plot’s ID and share the page manually.","error")}});
 $("copyContract").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(ADDRESS);toast("Address copied","The Sepolia contract address is on your clipboard.")}catch(e){setNotice("Clipboard access is blocked in this browser. You can copy the address from Etherscan.","error")}});
 
 async function connectWallet(){
@@ -223,7 +228,7 @@ async function connectWallet(){
       catch(e){if(e.code===4902){await window.ethereum.request({method:"wallet_addEthereumChain",params:[SEPOLIA]})}else throw e}
     }
     provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;signer=provider.getSigner();userAddress=await signer.getAddress();contract=new ethers.Contract(ADDRESS,ABI,signer);currentChainId=(await provider.getNetwork()).chainId;
-    refreshButtons();setNotice("Wallet connected. You’re on Sepolia and ready to tend your plots.","success");await loadCount();
+    refreshButtons();syncMyPlotsToggle();renderDirectory();setNotice("Wallet connected. You’re on Sepolia and ready to tend your plots.","success");await loadCount();await loadDirectory();
     if(viewedPlotId)await showPlot(viewedPlotId);
   }catch(e){console.error(e);setNotice(e.code===4001?"Wallet connection was cancelled. You can try again.":"Couldn’t connect: "+(e.message||String(e)),"error")}
   finally{connectBtn.disabled=false}
@@ -270,10 +275,11 @@ $("statusCardBtn").addEventListener("click",async()=>{
 async function refreshWalletState(){
   if(!window.ethereum)return;
   provider=new ethers.providers.Web3Provider(window.ethereum);readProvider=provider;await loadCount();await loadDirectory();
-  const accounts=await provider.listAccounts();userAddress=accounts[0]||null;
+  const accounts=await provider.listAccounts();userAddress=accounts[0]||null;if(!userAddress)mineOnly=false;
   signer=userAddress?provider.getSigner():null;contract=signer?new ethers.Contract(ADDRESS,ABI,signer):null;
   refreshButtons();
   const network=await provider.getNetwork();currentChainId=network.chainId;refreshButtons();
+  syncMyPlotsToggle();renderDirectory();
   if(network.chainId!==11155111){setNotice(userAddress?"Switch MetaMask to Sepolia to make changes. Public plot records remain readable.":"Connect to Sepolia to make changes. Public plot records remain readable.");}
   else if(userAddress)setNotice("Wallet connected to Sepolia. You’re ready to tend your plots.","success");
   if(viewedPlotId)await showPlot(viewedPlotId);
@@ -289,6 +295,8 @@ async function init(){
     window.ethereum.on("accountsChanged",()=>refreshWalletState());
     window.ethereum.on("chainChanged",()=>window.location.reload());
   }
+  const sharedValue=new URLSearchParams(window.location.search).get("plot"),sharedId=Number(sharedValue);
+  if(sharedValue&&Number.isSafeInteger(sharedId)&&sharedId>0){$("plotId").value=String(sharedId);await showPlot(sharedId)}
 }
 window.addEventListener("DOMContentLoaded",init);
 </script>
