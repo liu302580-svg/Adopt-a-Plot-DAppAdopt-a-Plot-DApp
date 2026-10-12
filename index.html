@@ -190,6 +190,119 @@ footer{border-top:1px solid rgba(52,75,48,.1);margin-top:24px}
   .card,.step,.plot-entry,.inspo-card,.btn,.nav a{transition:none!important}
 }
 
+
+/* Five plot tools, five distinct visual compositions */
+@media(min-width:1001px){
+  #tools{grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+  #tools>.card:nth-child(1){grid-column:span 7}
+  #tools>.card:nth-child(2){grid-column:span 5}
+  #tools>.card:nth-child(n+3){grid-column:span 4}
+}
+#tools>.card{min-width:0}
+#tools>.card:nth-child(1){
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(180px,.85fr);
+  align-content:start;align-items:end;column-gap:22px;
+  background:linear-gradient(125deg,#234832 0%,#315c3b 65%,#426847 100%);
+  border-color:#31583a;color:#fffdf3;
+  box-shadow:0 20px 48px rgba(27,59,39,.17)
+}
+#tools>.card:nth-child(1):before{
+  left:0;right:0;height:3px;opacity:1;
+  background:linear-gradient(90deg,#d8e89a 0%,#9fb56c 45%,rgba(159,181,108,0) 100%)
+}
+#tools>.card:nth-child(1) .card-head,
+#tools>.card:nth-child(1) .card-copy{grid-column:1/-1}
+#tools>.card:nth-child(1) .card-head{align-items:center}
+#tools>.card:nth-child(1) h3{color:#fffdf3;font-size:26px}
+#tools>.card:nth-child(1) .label-sm{color:#d5e2bd}
+#tools>.card:nth-child(1) .card-copy{color:#d5dfd0;max-width:540px}
+#tools>.card:nth-child(1) .field{margin:2px 0 0}
+#tools>.card:nth-child(1) .field label{color:#e5eadc}
+#tools>.card:nth-child(1) .field input{background:rgba(255,255,250,.96);border-color:rgba(255,255,255,.45)}
+#tools>.card:nth-child(1) #adoptBtn{
+  min-height:47px;margin-bottom:0;background:#d9e99d;color:#203b28;
+  box-shadow:none
+}
+#tools>.card:nth-child(1) #adoptBtn:hover{background:#e5f2b9}
+#tools>.card:nth-child(2){
+  background:#fbfcf6;border-style:dashed;border-color:#c8d2bb;
+  box-shadow:none;justify-content:center
+}
+#tools>.card:nth-child(2):before{
+  left:27px;right:auto;top:26px;width:34px;height:2px;
+  background:#9bad7a;opacity:1
+}
+#tools>.card:nth-child(2) .card-head{margin-top:9px}
+#tools>.card:nth-child(2) .card-copy{max-width:390px}
+#tools>.card:nth-child(2) #plotId{font:500 15px "DM Mono",monospace}
+#tools>.card:nth-child(2) #lookupBtn{background:#fbfcf6;border-color:#c7d0bd}
+#tools>.card:nth-child(2) #lookupBtn:hover{background:#edf1e6}
+#tools>.card:nth-child(3){
+  box-shadow:inset 3px 0 #79946e,0 12px 36px rgba(31,53,34,.045),0 1px 3px rgba(31,53,34,.035)
+}
+#tools>.card:nth-child(3):before{
+  left:27px;right:27px;top:0;height:2px;
+  background:linear-gradient(90deg,#7e9b70,rgba(126,155,112,0));opacity:.9
+}
+#tools>.card:nth-child(3) .card-head{padding-left:7px}
+#tools>.card:nth-child(3) .field{margin-top:17px}
+#tools>.card:nth-child(3) #statusValue{background:#f6f8f1}
+#tools>.card:nth-child(3) #statusCardBtn{margin-top:5px}
+#tools>.card:nth-child(4){
+  background:linear-gradient(150deg,#fffefa,#faf3e9);
+  border-color:#e9ddca
+}
+#tools>.card:nth-child(4):before{
+  background:linear-gradient(90deg,#c28c62,rgba(194,140,98,0));opacity:.95
+}
+#tools>.card:nth-child(4) .count-badge{background:#f2e6d8;color:#845a3e}
+#tools>.card:nth-child(4) .card-copy{max-width:360px}
+#tools>.card:nth-child(4) .field:nth-of-type(3),
+#tools>.card:nth-child(4) .field:nth-of-type(4){
+  display:inline-block;vertical-align:top;width:calc(50% - 8px)
+}
+#tools>.card:nth-child(4) .field:nth-of-type(3){margin-right:10px}
+#tools>.card:nth-child(4) #harvestQuantity,
+#tools>.card:nth-child(4) #harvestUnit{min-height:45px}
+#tools>.card:nth-child(4) #harvestBtn{background:#785a3e}
+#tools>.card:nth-child(4) #harvestBtn:hover{background:#5e4430}
+#tools>.card:nth-child(5){
+  background:
+    radial-gradient(circle at 92% 17%,rgba(157,179,113,.15) 0 2px,transparent 2.5px) 0 0/16px 16px,
+    #f5f6ed;
+  border-color:#dce3ce
+}
+#tools>.card:nth-child(5):before{
+  background:linear-gradient(90deg,#9cad68,rgba(156,173,104,0));opacity:1
+}
+#tools>.card:nth-child(5) .card-copy{max-width:420px}
+#tools>.card:nth-child(5) #seedNames{
+  min-height:118px;background-color:rgba(255,255,252,.9);
+  border-style:dashed;border-color:#cbd5ba
+}
+#tools>.card:nth-child(5) #seedProgress{padding-top:2px}
+@media(max-width:1000px) and (min-width:801px){
+  #tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #tools>.card:nth-child(1),#tools>.card:nth-child(5){grid-column:1/-1}
+  #tools>.card:nth-child(1){grid-template-columns:1.2fr .8fr}
+}
+@media(max-width:800px){
+  #tools{grid-template-columns:1fr}
+  #tools>.card:nth-child(1){grid-template-columns:minmax(0,1fr) minmax(170px,.85fr)}
+  #tools>.card:nth-child(1) .card-head,
+  #tools>.card:nth-child(1) .card-copy{grid-column:1/-1}
+}
+@media(max-width:560px){
+  #tools>.card:nth-child(1){grid-template-columns:1fr}
+  #tools>.card:nth-child(1) .card-head,
+  #tools>.card:nth-child(1) .card-copy,
+  #tools>.card:nth-child(1) .field,
+  #tools>.card:nth-child(1) #adoptBtn{grid-column:1}
+  #tools>.card:nth-child(1) #adoptBtn{margin-top:3px}
+  #tools>.card:nth-child(4) .field:nth-of-type(3),
+  #tools>.card:nth-child(4) .field:nth-of-type(4){display:block;width:100%;margin-right:0}
+}
+
 </style>
 </head>
 <body>
