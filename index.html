@@ -579,10 +579,10 @@ async function connectWallet(){
   finally{connectBtn.disabled=false}
 }
 async function showPlot(id){
-  const reader=new ethers.Contract(ADDRESS,ABI,readProvider);
   const renderPlot=record=>{
-    const owner=record.owner??record[1],crop=record.crop??record[2],status=record.status??record[3],plotId=record.id??record[0]??id;
-    viewedPlotId=id;$("resultId").textContent=String(plotId);$("resultCrop").textContent=crop||"—";$("resultStatus").textContent=status||"—";$("resultOwner").textContent=owner;$("plotResult").style.display="block";
+    const recordId=Number((record.id??record[0]??0).toString());
+    const owner=record.owner??record[1],crop=record.crop??record[2],status=record.status??record[3];
+    viewedPlotId=id;$("resultId").textContent=String(recordId);$("resultCrop").textContent=crop||"—";$("resultStatus").textContent=status||"—";$("resultOwner").textContent=owner;$("plotResult").style.display="block";
     const isOwner=!!userAddress&&String(owner).toLowerCase()===userAddress.toLowerCase();
     $("ownerControls").style.display=isOwner?"block":"none";
     if(isOwner)$("newStatus").value="";
@@ -594,18 +594,27 @@ async function showPlot(id){
     setNotice("Plot #"+id+" loaded from the on-chain garden directory.","success");
     return;
   }
-  try{
-    const total=Number((await reader.plotCount()).toString());
-    if(id>total){
-      viewedPlotId=null;$("plotResult").style.display="none";
-      setNotice("Plot #"+id+" doesn’t exist yet. The garden currently has "+total+" plot"+(total===1?"":"s")+".","error");
+  const readers=[];
+  if(provider&&currentChainId===11155111)readers.push(new ethers.Contract(ADDRESS,ABI,provider));
+  if(readProvider&&readProvider!==provider)readers.push(new ethers.Contract(ADDRESS,ABI,readProvider));
+  if(!readers.length)readers.push(new ethers.Contract(ADDRESS,ABI,createPublicReadProvider()));
+  let lastError=null,confirmedMissing=false;
+  for(const reader of readers){
+    try{
+      const record=await reader.getPlot(id);
+      const recordId=Number((record.id??record[0]??0).toString());
+      if(recordId!==id){confirmedMissing=true;continue}
+      renderPlot(record);
+      setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
       return;
-    }
-    renderPlot(await reader.getPlot(id));
-    setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
-  }catch(e){
-    console.warn("Plot lookup failed",e);viewedPlotId=null;$("plotResult").style.display="none";
-    setNotice("Couldn’t reach Sepolia to read plot #"+id+". Check your connection or MetaMask network, then try again.","error");
+    }catch(e){lastError=e;console.warn("Plot lookup reader failed",id,e)}
+  }
+  viewedPlotId=null;$("plotResult").style.display="none";
+  if(confirmedMissing){
+    setNotice("Plot #"+id+" wasn’t found on Sepolia. Refresh the garden directory and check the plot ID.","error");
+  }else{
+    console.warn("All plot lookup readers failed",lastError);
+    setNotice("Sepolia couldn’t return plot #"+id+". Check the connection or refresh the garden directory, then try again.","error");
   }
 }
 async function sendTransaction(button,label,action){
