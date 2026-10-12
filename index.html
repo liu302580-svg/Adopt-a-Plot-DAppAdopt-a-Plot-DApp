@@ -25,7 +25,7 @@ h1,h2,h3,p{margin-top:0}h1{font:600 clamp(44px,5.2vw,70px)/1.03 "Playfair Displa
 .total-float{position:absolute;bottom:16px;right:16px;background:var(--card);border-radius:11px;padding:11px 15px;box-shadow:0 6px 24px #1c34221b}.total-float small{display:block;font-size:9px;letter-spacing:1px;color:var(--muted)}.total-float strong{font:600 23px "Playfair Display";color:var(--deep)}
 #notice{border:1px solid #e5dfc7;border-radius:9px;background:#fffbed;color:#736747;padding:11px 14px;font-size:12px;margin:0 0 18px;display:flex;align-items:center;gap:9px}#notice:before{content:"";width:7px;height:7px;border-radius:50%;background:#d2a84f;flex:none}#notice.success{background:#eff4e7;border-color:#dce8ca;color:#476145}#notice.success:before{background:#6d9c57}#notice.error{background:#fff0eb;border-color:#f0d1c4;color:#a8533a}#notice.error:before{background:#d36d4b}
 .section-head{display:flex;justify-content:space-between;align-items:end;margin:42px 0 16px}.section-head h2{font:600 29px "Playfair Display";letter-spacing:-.6px;margin:7px 0 4px}.section-head p{font-size:12px;color:var(--muted);margin:0}.label-sm{font:500 10px "DM Mono",monospace;color:#858c7d;letter-spacing:1px;text-transform:uppercase}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:24px;box-shadow:var(--shadow)}
 .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}.card h3{font:600 20px "Playfair Display";margin:5px 0 0}.count-badge,.network-badge{border-radius:50px;padding:6px 9px;background:#eef1e5;color:var(--green);font:500 10px "DM Mono",monospace}
 .card-copy{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 20px;max-width:440px}
 .wallet-card{background:#f2f3eb;border-radius:9px;padding:13px 14px;margin:15px 0}.wallet-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #e1e3d8}.wallet-row:last-child{border:0}.wallet-row span{font-size:11px;color:var(--muted)}.wallet-row strong{font:500 11px "DM Mono",monospace;text-align:right;overflow-wrap:anywhere}.wide{width:100%}
@@ -104,8 +104,16 @@ footer{display:flex;justify-content:space-between;padding:23px 0 32px;color:#858
           <div class="result-row"><span>Crop</span><span id="resultCrop"></span></div>
           <div class="result-row"><span>Status</span><span id="resultStatus"></span></div>
           <div class="result-row"><span>Owner</span><span id="resultOwner"></span></div>
-          <div id="ownerControls" class="owner-note"><label for="newStatus">Growing status · owner only</label><div class="field"><input id="newStatus" type="text" maxlength="100" placeholder="e.g. First leaves appeared"></div><button id="updateBtn" class="btn wide">Save status update ↗</button></div>
+          <div id="ownerControls" class="owner-note">You own this plot. Use the third card to record a growing update.</div>
         </div>
+      </article>
+      <article class="card">
+        <div class="card-head"><div><span class="label-sm">03 · Keep the story growing</span><h3>Update plot status</h3></div><span aria-hidden="true">↻</span></div>
+        <p class="card-copy">Record a growing milestone on-chain. Only the plot owner can submit an update; the contract checks ownership.</p>
+        <div class="field"><label for="statusPlotId">Plot ID</label><input id="statusPlotId" type="number" min="1" step="1" placeholder="e.g. 1"></div>
+        <div class="field"><label for="statusValue">New growing status</label><input id="statusValue" type="text" maxlength="100" placeholder="e.g. First leaves appeared"></div>
+        <button id="statusCardBtn" class="btn wide" disabled>Connect wallet to update ↗</button>
+        <p class="card-copy" style="margin:12px 0 0">Tip: look up the plot first to check its ID and owner.</p>
       </article>
     </div>
   </section>
@@ -154,13 +162,13 @@ const ABI=[
 ];
 const SEPOLIA={chainId:CHAIN_ID,chainName:"Sepolia",nativeCurrency:{name:"SepoliaETH",symbol:"SepoliaETH",decimals:18},rpcUrls:["https://rpc.sepolia.org"],blockExplorerUrls:["https://sepolia.etherscan.io"]};
 const $=id=>document.getElementById(id);
-const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn");
+const notice=$("notice"),countEl=$("plotCount"),adoptBtn=$("adoptBtn"),connectBtn=$("connectBtn"),statusCardBtn=$("statusCardBtn");
 let readProvider,provider,signer,contract,userAddress=null,viewedPlotId=null,toastTimer,currentChainId=null;
 function setNotice(message,type=""){notice.textContent=message;notice.className=type}
 function toast(title,message){$("toastTitle").textContent=title;$("toastText").textContent=message;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),5000)}
 function shortAddress(a){return a?a.slice(0,6)+"…"+a.slice(-4):""}
 function validId(){const id=Number($("plotId").value);return Number.isSafeInteger(id)&&id>0?id:null}
-function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
+function refreshButtons(){const onSepolia=currentChainId===11155111;adoptBtn.disabled=!userAddress||!onSepolia;adoptBtn.textContent=!userAddress?"Connect wallet to adopt ↗":!onSepolia?"Switch to Sepolia to adopt":"Adopt this plot ↗";statusCardBtn.disabled=!userAddress||!onSepolia;statusCardBtn.textContent=!userAddress?"Connect wallet to update ↗":!onSepolia?"Switch to Sepolia to update":"Save growing update ↗";connectBtn.textContent=userAddress?shortAddress(userAddress)+" · Sepolia":"Connect wallet ↗"}
 async function loadCount(){try{const n=await (new ethers.Contract(ADDRESS,ABI,readProvider)).plotCount();countEl.textContent=n.toString()}catch(e){console.warn("Could not read plot count",e);countEl.textContent="—";setNotice("Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.")}}
 let directoryItems=[];
 const directoryGrid=$("directoryGrid"),directoryStatus=$("directoryStatus"),directoryCount=$("directoryCount");
@@ -249,9 +257,15 @@ adoptBtn.addEventListener("click",async()=>{
 });
 $("lookupBtn").addEventListener("click",async()=>{const id=validId();if(!id){setNotice("Enter a valid plot ID. Plot IDs start at 1.","error");return}await showPlot(id)});
 $("plotId").addEventListener("keydown",e=>{if(e.key==="Enter")$("lookupBtn").click()});
-$("updateBtn").addEventListener("click",async()=>{
-  const status=$("newStatus").value.trim();if(!viewedPlotId||!userAddress){setNotice("Connect the plot owner’s wallet and look up the plot again.","error");return}if(!status){setNotice("Enter a growing status first.","error");return}
-  await sendTransaction($("updateBtn"),"Status update",()=>contract.updatePlotStatus(viewedPlotId,status));
+$("statusCardBtn").addEventListener("click",async()=>{
+  const id=Number($("statusPlotId").value),status=$("statusValue").value.trim();
+  if(!userAddress){setNotice("Connect the plot owner’s MetaMask wallet first.","error");return}
+  if(currentChainId!==11155111){setNotice("Switch MetaMask to Sepolia before updating a plot.","error");return}
+  if(!Number.isSafeInteger(id)||id<1){setNotice("Enter a valid plot ID. Plot IDs start at 1.","error");return}
+  if(!status){setNotice("Enter a growing status first.","error");return}
+  viewedPlotId=id;
+  await sendTransaction(statusCardBtn,"Status update",()=>contract.updatePlotStatus(id,status));
+  if($("notice").className==="success")$("statusValue").value="";
 });
 async function refreshWalletState(){
   if(!window.ethereum)return;
