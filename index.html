@@ -611,10 +611,10 @@ async function showPlot(id){
   }
   viewedPlotId=null;$("plotResult").style.display="none";
   if(confirmedMissing){
-    setNotice("Plot #"+id+" wasn’t found on Sepolia. Refresh the garden directory and check the plot ID.","error");
+    setNotice("Plot not found on Sepolia. Refresh the garden directory and check the plot ID.","error");
   }else{
     console.warn("All plot lookup readers failed",lastError);
-    setNotice("Sepolia couldn’t return plot #"+id+". Check the connection or refresh the garden directory, then try again.","error");
+    setNotice("Couldn’t read that plot from Sepolia. Check your connection and try again.","error");
   }
 }
 async function sendTransaction(button,label,action){
@@ -774,7 +774,8 @@ window.addEventListener("DOMContentLoaded",init);
     "Approve the transaction in MetaMask…":"请在 MetaMask 中确认交易…","Transaction submitted. Waiting for Sepolia confirmation…":"交易已提交，正在等待 Sepolia 确认…",
     "Transaction confirmed.":"交易已确认。","Approve the adoption in MetaMask.":"请在 MetaMask 中确认认领交易。","Waiting for Sepolia confirmation…":"正在等待 Sepolia 确认…",
     "Wallet connection was cancelled. You can try again.":"已取消连接钱包。你可以重试。","MetaMask wasn’t detected. Install the wallet extension, then refresh this page.":"未检测到 MetaMask。请安装钱包扩展后刷新页面。",
-    "Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.":"无法读取该地块。编号从 1 开始，请检查编号后重试。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。","Switch MetaMask to Sepolia before updating a plot.":"更新地块前，请将 MetaMask 切换至 Sepolia。","Enter a valid plot ID. Plot IDs start at 1.":"请输入有效的地块编号。编号从 1 开始。","Enter a growing status first.":"请先填写生长状态。","Enter a harvest quantity greater than zero.":"请输入大于零的收获数量。","Choose a valid harvest unit.":"请选择有效的收获单位。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。",
+    "Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.":"无法读取该地块。编号从 1 开始，请检查编号后重试。",
+    "Plot not found on Sepolia. Refresh the garden directory and check the plot ID.":"Sepolia 上找不到该地块。请刷新花园目录并检查地块编号。","Couldn’t read that plot from Sepolia. Check your connection and try again.":"无法从 Sepolia 读取该地块。请检查网络连接后重试。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。","Switch MetaMask to Sepolia before updating a plot.":"更新地块前，请将 MetaMask 切换至 Sepolia。","Enter a valid plot ID. Plot IDs start at 1.":"请输入有效的地块编号。编号从 1 开始。","Enter a growing status first.":"请先填写生长状态。","Enter a harvest quantity greater than zero.":"请输入大于零的收获数量。","Choose a valid harvest unit.":"请选择有效的收获单位。","Connect the plot owner’s MetaMask wallet first.":"请先连接地块所有者的 MetaMask 钱包。",
     "Plot link copied":"地块链接已复制","The Sepolia contract address is on your clipboard.":"Sepolia 合约地址已复制到剪贴板。","Clipboard access is blocked. You can copy the address from Etherscan.":"剪贴板访问受限。你可以从 Etherscan 复制合约地址。",
     "Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.":"此浏览器暂时无法访问 Sepolia 公共数据服务。请连接 MetaMask 以加载花园记录。"
   },th:{
@@ -816,6 +817,7 @@ window.addEventListener("DOMContentLoaded",init);
     "Transaction confirmed.":"ยืนยันธุรกรรมแล้ว","Approve the adoption in MetaMask.":"ยืนยันการรับอุปถัมภ์ใน MetaMask","Waiting for Sepolia confirmation…":"กำลังรอการยืนยันจาก Sepolia…",
     "Wallet connection was cancelled. You can try again.":"ยกเลิกการเชื่อมต่อกระเป๋าแล้ว ลองใหม่ได้","MetaMask wasn’t detected. Install the wallet extension, then refresh this page.":"ไม่พบ MetaMask กรุณาติดตั้งส่วนขยายกระเป๋าแล้วรีเฟรชหน้า",
     "Couldn’t load that plot. Plot IDs start at 1; check the ID and try again.":"โหลดแปลงไม่ได้ หมายเลขเริ่มที่ 1 กรุณาตรวจสอบแล้วลองใหม่","Connect the plot owner’s MetaMask wallet first.":"กรุณาเชื่อมต่อกระเป๋า MetaMask ของเจ้าของแปลงก่อน","Switch MetaMask to Sepolia before updating a plot.":"เปลี่ยน MetaMask ไปยัง Sepolia ก่อนอัปเดตแปลง","Enter a valid plot ID. Plot IDs start at 1.":"กรอกหมายเลขแปลงที่ถูกต้อง หมายเลขเริ่มที่ 1","Enter a growing status first.":"กรอกสถานะการเติบโตก่อน","Enter a harvest quantity greater than zero.":"กรอกปริมาณผลผลิตที่มากกว่าศูนย์","Choose a valid harvest unit.":"เลือกหน่วยผลผลิตที่ถูกต้อง",
+    "Plot not found on Sepolia. Refresh the garden directory and check the plot ID.":"ไม่พบแปลงนี้บน Sepolia รีเฟรชรายการสวนและตรวจสอบหมายเลขแปลง","Couldn’t read that plot from Sepolia. Check your connection and try again.":"อ่านข้อมูลแปลงจาก Sepolia ไม่ได้ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
     "Plot link copied":"คัดลอกลิงก์แปลงแล้ว","The Sepolia contract address is on your clipboard.":"คัดลอกที่อยู่สัญญา Sepolia แล้ว","Clipboard access is blocked. You can copy the address from Etherscan.":"เข้าถึงคลิปบอร์ดไม่ได้ คุณสามารถคัดลอกที่อยู่จาก Etherscan",
     "Sepolia’s public data service is unavailable in this browser. Connect MetaMask to load the live garden.":"บริการข้อมูลสาธารณะของ Sepolia ใช้งานไม่ได้ในเบราว์เซอร์นี้ เชื่อมต่อ MetaMask เพื่อโหลดสวนแบบเรียลไทม์"
   }};
