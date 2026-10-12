@@ -571,7 +571,9 @@ async function connectWallet(){
   }catch(e){console.error(e);setNotice(e.code===4001?"Wallet connection was cancelled. You can try again.":"Couldn’t connect: "+(e.message||String(e)),"error")}
   finally{connectBtn.disabled=false}
 }
-async function showPlot(id){
+async function showPlot(rawId){
+  const id=Number(rawId);
+  if(!Number.isSafeInteger(id)||id<=0){setNotice("Enter a valid plot ID. Plot IDs start at 1.","error");return}
   const renderPlot=record=>{
     const recordId=Number((record.id??record[0]??0).toString());
     const owner=record.owner??record[1],crop=record.crop??record[2],status=record.status??record[3];
@@ -581,7 +583,7 @@ async function showPlot(id){
     if(isOwner)$("newStatus").value="";
     $("plotResult").scrollIntoView({behavior:"smooth",block:"nearest"});
   };
-  const cached=directoryItems.find(plot=>plot.id===id);
+  const cached=directoryItems.find(plot=>Number(plot.id)===id);
   if(cached){
     renderPlot(cached);
     setNotice("Plot #"+id+" loaded from the on-chain garden directory.","success");
@@ -592,22 +594,23 @@ async function showPlot(id){
   if(readProvider&&readProvider!==provider)readers.push(new ethers.Contract(ADDRESS,ABI,readProvider));
   if(provider&&currentChainId===11155111)readers.push(new ethers.Contract(ADDRESS,ABI,createPublicReadProvider()));
   if(!readers.length)readers.push(new ethers.Contract(ADDRESS,ABI,createPublicReadProvider()));
-  let lastError=null,confirmedMissing=false;
+  let lastError=null,readResponses=0,missingResponses=0;
   for(const reader of readers){
     try{
       const record=await reader.getPlot(id);
+      readResponses++;
       const recordId=Number((record.id??record[0]??0).toString());
-      if(recordId!==id){confirmedMissing=true;continue}
+      if(recordId!==id){missingResponses++;continue}
       renderPlot(record);
       setNotice("Plot #"+id+" loaded from the Sepolia blockchain.","success");
       return;
     }catch(e){lastError=e;console.warn("Plot lookup reader failed",id,e)}
   }
   viewedPlotId=null;$("plotResult").style.display="none";
-  if(confirmedMissing){
+  if(readResponses>0&&missingResponses===readResponses){
     setNotice("Plot not found on Sepolia. Refresh the garden directory and check the plot ID.","error");
   }else{
-    console.warn("All plot lookup readers failed",lastError);
+    console.warn("Not every plot reader returned a result",lastError);
     setNotice("Couldn’t read that plot from Sepolia. Check your connection and try again.","error");
   }
 }
@@ -676,7 +679,11 @@ $("seedBatchBtn").addEventListener("click",async()=>{
       const receipt=await tx.wait();
       if(receipt.status!==1)throw new Error("The transaction for “"+crops[i]+"” did not confirm.");
       completed++;
-      $("txmessage").textContent="Seed plot "+completed+" confirmed";
+      let actualPlotId=null;
+      try{actualPlotId=Number((await contract.plotCount()).toString());if(!Number.isSafeInteger(actualPlotId)||actualPlotId<1)actualPlotId=null}
+      catch(e){console.warn("Confirmed seed transaction, but could not read its plot ID",e)}
+      $("txmessage").textContent=actualPlotId?"Plot #"+actualPlotId+" adopted":"Seed transaction "+completed+" confirmed";
+      if(actualPlotId)$("plotId").value=String(actualPlotId);
       $("txlink").href="https://sepolia.etherscan.io/tx/"+tx.hash;$("txline").style.display="block";
     }
   }catch(e){failure=e;console.error("Seed collection stopped",e)}
